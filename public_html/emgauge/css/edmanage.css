@@ -1,0 +1,341 @@
+/***********************************************/
+/* HTML tag styles                             */
+/***********************************************/ 
+
+body{
+	font-family: "Lucida Grande","Lucida Sans Unicode", "Helvetica Neue", Arial, sans-serif;
+	font-size:  62.5%;
+	color:  #6e6e6e;
+	margin: 0;
+}
+
+/***********************************************/
+/* Menu Divs                                 */
+/***********************************************/
+
+p {
+	font-size: 1.1em;
+}
+
+.banner {
+	height: 100px;
+	margin-top: 10px;
+}
+
+.banner img {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.loginform {
+	margin-top: 50px;
+}
+
+h1 {
+	font-family: Georgia, "Lucida Grande", "Lucida Sans Unicode", "Helvetica Neue", Arial, sans-serif;
+	font-size: 120%;
+	color: #23656b;
+	line-height: 110%;
+	background:#F0F0F0;
+	text-align: center;
+	border-left: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	clear: both;
+	font-weight: normal;
+	padding: 5px;
+	font-variant: small-caps;
+	word-spacing: 0.3em;
+}
+
+h2 {
+	font-family: Georgia,"Lucida Grande","Lucida Sans Unicode", "Helvetica Neue", Arial, sans-serif;
+	font-size: 110%;
+	line-height: 16px;
+	background: #FFF4DD;
+	text-align: center;
+	border-left: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	clear: both;
+	font-weight: bold;
+	padding: 3px 0 0 0;
+	font-variant: normal;
+	text-transform: capitalize;
+}
+
+.graphCanvas {
+	border-left: 1px solid #CCCCCC;
+	border-bottom: 1px solid #CCCCCC;
+	border-right: 1px solid #CCCCCC;
+	border-top: 1px solid #CCCCCC;
+	margin: 0px;	
+}
+
+.panel .tabular {
+	float: right;
+	width: 80px;
+}
+
+.instruction
+{
+	font-size:90%;
+	font-style:italic;
+	color:#999999;
+	margin-top:0px;
+	padding-top: 0px;
+	text-align:right;
+	
+
+}
+.listSelect {
+	width: 100%;
+}
+
+.listTable
+{
+height:250px;
+overflow:scroll;
+
+}
+
+.filterList
+{
+width: 150px;
+
+}
+
+tr.thumbnail td {
+	border-bottom: 1px solid #6e6e6e;
+	border-right: 1px solid #6e6e6e;
+	border-left: 1px solid #6e6e6e;
+}
+
+.thumbnail img {
+	padding: 2px;
+	border:1px solid #aeaeae;
+}
+
+img.left {
+	float: left;
+	padding-right: 10px;
+}
+
+.shouter {
+	border: 1px solid #d6a9a9;
+	padding: 10px 20px 0 10px;
+}
+
+td.money {
+	text-align: right;
+}
+
+tr.title {
+	background: #4b7cab;
+	color: #fff;
+}
+
+tr.header {
+	background: #d7dbaf;
+	color: #2e5d60;
+}
+
+.oneline {
+	width: 31%;
+}
+
+th {
+	background: #d7dbaf;
+	color: #2e5d60;
+}
+
+tr.odd {
+	background: #e4e7e9;
+}
+
+p#mailthrobber {
+	background: url(../images/ajax-loader.gif) left center no-repeat;
+	margin-bottom: 5px;
+	height: 32px;
+	padding: 14px 0 0 32px;
+	display: none;
+}
+
+p#mailstatus {
+	display: none;
+}
+/*Styles for form validations*/
+
+#altermailer label.error {
+						display:none;
+						margin-left:103px;
+						float:right;
+						
+						}
+						
+input.smalltime {
+	width: 2em !important;
+}
+
+#mailerbuttons {
+	clear: both;
+}
+
+p.lrbuttons {
+	padding-top: 30px;
+	text-align: center;
+}
+
+p.lrbuttons img {
+	padding-top: 5px;
+}
+
+#ui-datepicker-div {
+	z-index: 10000;
+}
+
+.errorblock {
+	margin-top: 150px;
+}
+
+ul.warnings {
+	list-style: none;
+	margin: 0;
+}
+
+ul.warnings li {
+	padding: 0 0 10px 20px;
+	background: url('../images/exclamation.gif') top left no-repeat;
+}
+
+fieldset {
+	background: url('../images/cmxform-fieldset.gif') repeat-x bottom left;
+	padding-left: 0;
+	padding-right: 0;
+	border: none;
+}
+
+fieldset.blank
+{
+	background:none;
+}
+
+fieldset p {
+	background: url('../images/cmxform-divider.gif') scroll repeat-x top left;
+	margin-bottom: 0.8em;
+	padding: 0.8em 0.6em 0 1.3em;
+}
+
+fieldset label {
+	font-size: 10px;
+}
+
+fieldset legend {
+	font-size: 10px;
+	padding-left: 0.3em;
+}
+
+span.formhint {
+	font-size: 10px;
+}
+
+/*style for form buttons*/
+
+input[type=submit], input[type=reset], select, option {font-size: 10px;}
+
+form p.buttonContainer
+{
+	text-align: center;
+	font-size: 10px;
+}
+
+.buttonContainer
+{
+	font-size: 10px;
+}
+
+p.collapsed-state
+{
+	background: url('../images/arrow-up.gif') no-repeat left center;
+	padding-left: 20px
+	
+}
+
+p.expanded-state
+{
+	background: url('../images/arrow-down.gif') no-repeat left center;
+	padding-left: 20px
+}
+
+.gradient {
+	background: url('../images/cmxform-fieldset.gif') repeat-x bottom left;
+}
+
+div.grid_bg {
+	background: url('../images/grid_bg.gif') top left repeat-y;
+	float: left;
+}
+
+.newlist p textarea {
+	width: 270px;
+	height: 50px;
+}
+
+.pager {
+	text-align: center;
+	position: relative;
+}
+
+.pager .prevlink {
+	position: absolute;
+	left: 10px;
+	top: 4px;
+}
+
+.pager .nextlink {
+	position: absolute;
+	right: 10px;
+	top: 4px;
+}
+
+.pager p {
+	line-height: 20px;
+}
+
+td.numeric, th.numeric {
+	text-align: right;
+}
+
+#gid2, #gid3, #gid4, #gid5, #gid6 {
+	display: none;
+}
+
+div.charts {
+	display: none;
+}
+
+table table {
+	margin-bottom: 0;
+	border: 1px solid #6e6e6e;
+}
+
+h5 {
+	margin-bottom: 0;
+	color: #187078;
+}
+
+h6 {
+	margin-bottom: 6px;
+	color: #a5af3b;
+}
+
+.commentholder p {
+	margin-bottom: 3px;
+}
+
+p.throbber {
+	background: url(../images/ajax-loader.gif) left center no-repeat;
+	margin-bottom: 5px;
+	height: 32px;
+	padding: 14px 0 0 32px;
+	display: none;
+}

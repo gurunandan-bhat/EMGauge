@@ -1,0 +1,192 @@
+body {
+	font-size: 62.5%;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+	color: #404040;
+}
+
+.banner {
+	height: 125px;
+	position: relative;
+	background: url('../images/emgauge_banner.jpg') top left no-repeat;
+	border-bottom: 1px solid #a3ae38;
+	margin-bottom: 15px;
+}
+
+
+#authen_info {
+	position: absolute;
+	right: 10px;
+	bottom: 10px;
+}
+
+h1.sectionhead {
+	font-size: 1.2em;
+	margin-bottom: 3em;
+	font-variant: small-caps;
+	letter-spacing: 1px;
+	font-weight: bold;
+	color: #818536;
+}
+
+h2 {
+	font-size: 1.2em;
+}
+
+.listentry h1 {
+	font-size: 1.2em;
+	color: #185257;
+	margin-bottom: 0;
+	font-weight: bold;
+}
+
+.listentry h2 {
+	font-size: 1em;
+	color: #818536;
+	margin-bottom: 1em;
+}
+
+.listentry h3 {
+	font-size: 1.1em;
+	color: #185257;
+	font-weight: bold;
+	margin-bottom: 0.5em;
+}
+
+select, option {
+	font-size: 1em;
+}
+
+label.emgerr {
+	color: red;
+	display: block;
+}
+
+textarea {
+	height: 50px;
+	width: 340px;
+	font-size: 10px;
+}
+
+.step_tabs {
+	float: left;
+	width: 100%;
+}
+
+.step_tabs ul {
+	list-style: none;
+	float: left;
+	border-bottom: 10px solid #e6e6e6;
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+.step_tabs li {
+	padding: 0;
+	margin: 0;
+	float: left;
+	width: 100px;
+	border: 1px solid #e6e6e6;
+	margin-right: 10px;
+	border-bottom: none;
+}
+
+.step_tabs li#current {
+	background: #e6e6e6;
+}
+
+.step_tabs li:last-child {
+	margin-right: 0;
+}
+
+.step_tabs li span {
+	display: block;
+	float: left;
+	font-size: 3.2em;
+	margin-right: 6px;
+	margin-left: 3px;
+}
+
+.step_tabs li .step_desc {
+	padding-top: 1em;
+	padding-right: 0.2em;
+}
+
+.formholder {
+	background: url('../images/v_border.gif') 120px 0 repeat-y;
+}
+
+.innerholder {
+	float: left;
+	margin-top: 20px;
+	border-bottom: 10px solid #e6e6e6;
+}
+
+
+.pager {
+	text-align: center;
+	position: relative;
+}
+
+.pager .prevlink {
+	position: absolute;
+	left: 10px;
+	top: 4px;
+}
+
+.pager .nextlink {
+	position: absolute;
+	right: 10px;
+	top: 4px;
+}
+
+.pager p {
+	line-height: 20px;
+}
+
+.menucol h1 {
+	font-size: 1.3em;
+	font-weight: bold;
+	text-align: center;
+	color: #6e6e6e;
+}
+
+.menucol img.left {
+	margin-top: 0;
+}
+
+p#mailthrobber {
+	background: url(../images/ajax-loader.gif) left center no-repeat;
+	margin-bottom: 5px;
+	height: 32px;
+	padding: 14px 0 0 32px;
+	display: none;
+}
+
+td.numeric {
+	text-align: right;
+}
+
+tr.title {
+	background: #4b7cab;
+	color: #fff;
+}
+
+tr.header {
+	background: #d7dbaf;
+	color: #2e5d60;
+}
+
+.oneline {
+	width: 31%;
+}
+
+th {
+	background: #d7dbaf;
+	color: #2e5d60;
+}
+
+tr.odd {
+	background: #e4e7e9;
+}
+
