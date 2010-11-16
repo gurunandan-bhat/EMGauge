@@ -11,7 +11,7 @@
 	<body>
 		<div class="container">
 			<div class="span-24 last">
-				<div class="banner"><!-- TMPL_INCLUDE NAME=bannermenu.tpl --></div>
+				<div class="banner"><!-- TMPL_INCLUDE NAME=default/bannermenu.tpl --></div>
 			</div>
 			<div class="prepend-12 span-8 append-4 last">
 				<p class="<!-- TMPL_VAR NAME=CLASS -->"><!-- TMPL_VAR NAME=MSG --></p>

@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib qw{../../emgauge/lib};
+use ex::lib qw{../../emgauge/lib};
 
 use EMGauge::User;
 use EMGauge::Constants;

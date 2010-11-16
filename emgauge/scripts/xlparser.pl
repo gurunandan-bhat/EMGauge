@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 
-use lib::abs qw{/home/nandan/Devel/EMGauge/emgauge/lib};
+use lib::abs qw{/home/nandan/workspace/EMGauge/emgauge/lib};
 
 use EMGauge::Constants;
 

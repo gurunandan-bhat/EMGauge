@@ -1,5 +1,8 @@
 package EMGaugeDB::XLParseQueue;
 
+use strict;
+use warnings;
+
 use lib qw(../);
 
 use base qw(EMGaugeDB);

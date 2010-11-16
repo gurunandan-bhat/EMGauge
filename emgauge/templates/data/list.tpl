@@ -14,9 +14,6 @@
 			<div class="span-24 banner last">
 				<div class="banner"><!-- TMPL_INCLUDE NAME=default/bannermenu.tpl --></div>
 			</div>
-			<div class="span-24 last">
-				<!-- TMPL_INCLUDE NAME=recipient_header.tpl -->
-			</div>
 			<div class="prepend-7 span-10 append-1">
 				<h1 class="sectionhead">Recent Lists</h1>
 				<!-- TMPL_LOOP NAME=LISTS -->

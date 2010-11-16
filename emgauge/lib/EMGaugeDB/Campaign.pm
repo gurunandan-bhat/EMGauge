@@ -1,5 +1,8 @@
 package EMGaugeDB::Campaign;
 
+use strict;
+use warnings;
+
 use lib qw(../);
 
 use base qw(EMGaugeDB);

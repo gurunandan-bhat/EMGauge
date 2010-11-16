@@ -1,5 +1,8 @@
 package EMGaugeDB::Schedule;
 
+use strict;
+use warnings;
+
 use lib qw(../);
 
 use base qw(EMGaugeDB);

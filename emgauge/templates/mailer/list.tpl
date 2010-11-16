@@ -34,7 +34,14 @@
 						<a href="<!-- TMPL_VAR NAME=MAILERLANDINGPAGELINK -->">Landing Page</a> | 
 						<a href="#">Performance</a> |
 						<a href="mailer.cgi?rm=delete_mailer&selectedmailer=<!-- TMPL_VAR NAME=MAILERID -->">Delete</a> |
-						<a href="schedule.cgi?rm=save_step0&mailerid=<!-- TMPL_VAR NAME=MAILERID -->">Add a Schedule</a>
+						<a href="schedule.cgi?rm=save_step0&mailerid=<!-- TMPL_VAR NAME=MAILERID -->">Add a Schedule</a> | 
+						<a href="#" class="testsend" mailer="<!-- TMPL_VAR NAME=MAILERID -->">Test this Mailer</a>
+					</p>
+					<p class="testsendform">
+						<form id ="sendform<!-- TMPL_VAR NAME=MAILERID -->" action="#" method="post">
+							<input type="text" name="sendto" value="" style="width: 200px;"/>
+							<input type="submit" name="sendto<!-- TMPL_VAR NAME=MAILERID -->" value="Send" />
+						</form>
 					</p>
 				</div>
 				<hr />

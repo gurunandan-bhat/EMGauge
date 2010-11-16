@@ -9,7 +9,6 @@ use Config::Simple;
 
 use Net::POP3;
 use Mail::DeliveryStatus::BounceParser;
-
 use Date::Manip;
 
 use lib::abs qw{../lib/};

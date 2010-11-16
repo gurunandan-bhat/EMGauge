@@ -1,5 +1,8 @@
 package EMGaugeDB::Feedback;
 
+use strict;
+use warnings;
+
 use lib qw(../);
 
 use base qw(EMGaugeDB);

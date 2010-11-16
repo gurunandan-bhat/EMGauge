@@ -20,7 +20,7 @@ sub cgiapp_init {
 
 	$app->config_file($params{cfg_file});
 
-	$app->html_tmpl_class('HTML::Template::Pro');
+	$app->html_tmpl_class('HTML::Template');
 	$app->tmpl_path( $app->config_param('Path.Templates') );
 	
 	$app->dbh_config(
@@ -99,7 +99,7 @@ sub pager {
 	my $page = shift;
 	my $maxpage = shift;
 	
-	return undef unless ($maxpage > 1);
+	return unless ($maxpage > 1);
 
 	my $url = $app->query->url(-relative => 1) || 'index.cgi';
 
@@ -130,7 +130,7 @@ sub login : Runmode {
 
 	$app->redirect('index.cgi') if $app->authen->username;
 	
-	my $tpl = $app->load_tmpl('default/login.tpl');
+	my $tpl = $app->load_tmpl('default/login.tpl', die_on_bad_params => 0);
 	my $q = $app->query;
 	my $auth = $app->authen;
 	

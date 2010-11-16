@@ -14,7 +14,8 @@ our $VERSION = '0.01';
 
 use EMGauge::Constants;
 
-my $cfg = new Config::Simple($EMGauge::Constants::confdir . 'EMGauge.conf');
+my $cfg = new Config::Simple($EMGauge::Constants::confdir . 'EMGauge.conf') or
+	die "Cannot initialize configuration: " . Config::Simple::error();
 
 my $dsn = $cfg->param('Database.DSN');
 my $dbuser = $cfg->param('Database.DBUser');
