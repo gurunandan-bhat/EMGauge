@@ -99,7 +99,7 @@ sub pager {
 	my $page = shift;
 	my $maxpage = shift;
 	
-	return unless ($maxpage > 1);
+	return '' unless ($maxpage > 1);
 
 	my $url = $app->query->url(-relative => 1) || 'index.cgi';
 

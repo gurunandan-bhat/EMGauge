@@ -7,6 +7,9 @@
 		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
 		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
+		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+ 		<script type="text/javascript" src="js/jquery.validate.pack.js"></script>
+		<script type="text/javascript" src="js/index_test_mail.js"></script>    
 		<title>Create Mailer</title>
     </head>
 	<body>
@@ -34,15 +37,19 @@
 						<a href="<!-- TMPL_VAR NAME=MAILERLANDINGPAGELINK -->">Landing Page</a> | 
 						<a href="#">Performance</a> |
 						<a href="mailer.cgi?rm=delete_mailer&selectedmailer=<!-- TMPL_VAR NAME=MAILERID -->">Delete</a> |
-						<a href="schedule.cgi?rm=save_step0&mailerid=<!-- TMPL_VAR NAME=MAILERID -->">Add a Schedule</a> | 
-						<a href="#" class="testsend" mailer="<!-- TMPL_VAR NAME=MAILERID -->">Test this Mailer</a>
+						<a href="schedule.cgi?rm=save_step0&mailerid=<!-- TMPL_VAR NAME=MAILERID -->">Add Schedule</a> | 
+						<a href="#" class="testlink">Test</a>
 					</p>
-					<p class="testsendform">
-						<form id ="sendform<!-- TMPL_VAR NAME=MAILERID -->" action="#" method="post">
-							<input type="text" name="sendto" value="" style="width: 200px;"/>
-							<input type="submit" name="sendto<!-- TMPL_VAR NAME=MAILERID -->" value="Send" />
-						</form>
-					</p>
+					<form class="sendform" id ="sendform<!-- TMPL_VAR NAME=MAILERID -->" action="#" method="post">
+						<fieldset>
+							<legend>Enter Recipients to send Test Mail</legend>
+							<div class="teststatus"></div>
+							<input type="text" name="rcpt" value="" style="width: 250px;" />
+							<input type="hidden" name="mailer" value="<!-- TMPL_VAR NAME=MAILERID -->" />
+							<input type="hidden" name="rm" value="test_db_mailer" />
+							<input class="test" type="submit" name="sendto" value="Send" mailer="<!-- TMPL_VAR NAME=MAILERID -->" />
+						</fieldset>
+					</form>
 				</div>
 				<hr />
 				<!-- /TMPL_LOOP -->

@@ -35,6 +35,7 @@ use Digest::SHA qw{sha1_hex};
 use HTTP::BrowserDetect;
 use Email::Sender::Simple qw{sendmail};
 use Email::Sender::Transport::SMTP::Persistent;
+use Email::Valid;
 
 use HTML::Template;
 use Text::Template;
@@ -1070,5 +1071,186 @@ sub test_mailer : Runmode {
 	return 'Mail sent successfully. Check your Inbox';
 }
 
+sub test_db_mailer : Runmode {
+	
+	my $app = shift;
+	my $q = $app->query;
+	
+	my $dfv = {
+		required => [ qw{mailer rcpt} ],
+		filters => 'trim',
+		constraint_methods => {
+			rcpt => listofemails(),
+		},
+		msgs => {
+			prefix => 'err_',
+			any_errors => 'some_errors',
+		},
+	};
+
+	my $check = Data::FormValidator->check($q, $dfv);
+	my $valids = $check->valid;
+
+	if ($check->has_invalid or $check->has_missing) {
+
+		my $tpl = $app->load_tmpl('mailer/invalid_test_emails.tpl', die_on_bad_params => 0);
+		$tpl->param($check->msgs);
+		$tpl->param($valids);
+		
+		return $tpl->output;
+	}
+
+	my $mlrid = $valids->{mailer};
+	my @recipients = map {
+		scalar Email::Valid->address($_);
+	} split /\s*\,\s*/, $valids->{rcpt};
+	
+	my $mailer = EMGaugeDB::Mailer->retrieve(id => $mlrid) ||
+		die({type => 'error', msg => "Cannot Find Mailer with ID $mlrid"});
+	
+	my $mlrname = $mailer->name;
+	my $mlrsender = $mailer->sendername;
+	my $mlrsenderemail = $mailer->senderemail;
+	my $mlrsubject = $mailer->subject;
+	my $mlrreplyto = $mailer->replytoemail;
+	
+	my $mlrfile = $mailer->htmlfilepath;
+	die({type => 'error', msg => "Cannot Read HTML File: $mlrfile for Mailer ID $mlrid, Name: $mlrname"})
+		unless (-f $mlrfile and -r _);
+	
+	my $baseurl = $app->config_param('URL.AppBase');
+	my $mlrurl = $baseurl . '/' . $mailer->onlineurl;
+	
+	my $tree = HTML::TreeBuilder->new_from_file($mlrfile);
+	
+	my @attachments;
+
+	my $index = 1;
+	foreach my $img ($mailer->images) {
+	
+		my $imgid = $img->id;
+		my $src = $img->src;
+		my $fullsrc = $img->fullsrc;
+		my $url = $img->url;
+		
+		die({type => 'error', msg => "No Image found at: $fullsrc"})
+			unless -f $fullsrc;
+	
+		my @images = $tree->look_down(
+			_tag => 'img',
+			src => $src,
+		);
+
+		if ($img->include) { # Include - replace src by cid
+	
+			my ($imgfile, $imgdir, $imgsfx) = fileparse($fullsrc, qr/\.[^.]*/);
+			$imgfile = $imgfile . $imgsfx;
+			(my $type = $imgsfx) =~ s/^\.//;
+			 
+			foreach (@images) {
+				my $gid = 'EMGAUGE_' . $index;
+				$_->attr(src => "cid:$gid");
+	
+				push @attachments, {
+					Type => "image/$type",
+					Id => $gid,
+					Path => $fullsrc,
+					Disposition => 'inline',
+					Encoding => 'base64',
+				};
+				++$index;
+			}
+		}
+		else {
+			
+			foreach (@images) {
+				$_->attr(src => $baseurl . uri_escape(qq[/$url]));
+			}
+		}
+	}
+	
+	if ($mailer->attachment) {
+
+		push @attachments, {
+			Type => $mailer->attachmentmimetype,
+			Path => $mailer->attachment,
+			Filename => (fileparse($mailer->attachment))[1],
+			Disposition => 'attachment',
+			Encoding => 'base64',
+		}
+	}
+		
+	my $mlrdata = $tree->as_HTML();
+	$tree->delete;
+	
+	my $transport = $app->config_param('Mail.TestTransport') ?
+		Email::Sender::Transport::Test->new() : 
+		Email::Sender::Transport::SMTP::Persistent->new({
+			host => $app->config_param('Mail.SMTPRelay'),,
+			port => 25,
+			sasl_username => $app->config_param('Mail.AuthUser'),
+			sasl_password => $app->config_param('Mail.AuthPass'),
+		});
+	
+	my @failed;
+	foreach(@recipients) {
+		
+		my $msg = MIME::Entity->build(
+			Type => 'multipart/related',
+			To => $_,
+			From => "$mlrsender <$mlrsenderemail>",
+			'Reply-To' => $mlrreplyto,
+			Subject => $mlrsubject,
+		);
+	
+		$msg->attach(
+			Type => 'text/html',
+			Data => $mlrdata,
+			Encoding => 'quoted-printable',
+		);
+	
+		for (@attachments) {
+			$msg->attach(
+				Type => $_->{Type},
+				Id => $_->{Id},
+				Path => $_->{Path},
+				Encoding => $_->{Encoding},
+			);
+		}
+	
+		eval {
+			sendmail($msg, {transport => $transport});
+		};
+		if ($@) {
+			push @failed, $_;
+		}
+	}
+
+	if (@failed) {
+		return '<p class="error">Failed to deliver to: ' . join(', ', @failed) . '</p>';
+	}
+	else {
+		return '<p class="success">Successfully delivered mail to: ' . join(', ', @recipients) . '</p>'
+	}
+}
+
+
+sub listofemails {
+	
+	return sub {
+
+		my $dfv = shift;
+		$dfv->name_this('valid_emails');
+		
+		my $data = $dfv->get_filtered_data();
+		my $retval = 1;
+		foreach (split(/\s*\,\s*/, $data->{rcpt})) {
+			
+			$retval = $retval && Email::Valid->address($_);
+			last unless $retval;
+		}
+		return $retval;
+	}
+}
 
 1;
