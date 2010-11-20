@@ -38,8 +38,10 @@
 						<a href="#">Performance</a> |
 						<a href="mailer.cgi?rm=delete_mailer&selectedmailer=<!-- TMPL_VAR NAME=MAILERID -->">Delete</a> |
 						<a href="schedule.cgi?rm=save_step0&mailerid=<!-- TMPL_VAR NAME=MAILERID -->">Add Schedule</a> | 
-						<a href="#" class="testlink">Test</a>
+						<a href="#" class="testlink">Test</a> |
+						<a href="#" class="editlink" mailer="<!-- TMPL_VAR NAME=MAILERID -->" state="0">Modify</a>
 					</p>
+					<p class="throbber"><img class="left" src="images/ajax-loader.gif" width="16" height="16" style="margin: 0; padding: 0;" />&nbsp;&nbsp;Working. Please wait...</p>
 					<form class="sendform" id ="sendform<!-- TMPL_VAR NAME=MAILERID -->" action="#" method="post">
 						<fieldset>
 							<legend>Enter Recipients to send Test Mail</legend>
@@ -50,6 +52,7 @@
 							<input class="test" type="submit" name="sendto" value="Send" mailer="<!-- TMPL_VAR NAME=MAILERID -->" />
 						</fieldset>
 					</form>
+					<div class="metaformholder"></div>
 				</div>
 				<hr />
 				<!-- /TMPL_LOOP -->

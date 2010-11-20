@@ -190,11 +190,15 @@ tr.odd {
 	background: #e4e7e9;
 }
 
-form.sendform legend {
+form legend {
 	font-size: 1em;
 	color: #185257;
 }
 
-form.sendform legend.waiting {
+form legend.waiting {
 	padding-left: 25px;
+}
+
+label {
+	color: #818536;
 }

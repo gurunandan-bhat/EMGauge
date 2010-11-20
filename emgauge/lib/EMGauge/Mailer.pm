@@ -712,7 +712,7 @@ sub save_mailer : Runmode {
 			height => $_->{height},
 			size => $_->{size},
 			alt => $_->{alt},
-			thmb => $_->{thmb},
+			thmb => $_->{thmburl},
 			thmbw => $_->{thmbw},
 			thmbh => $_->{thmbh},
 			found => $_->{found},
@@ -1252,5 +1252,136 @@ sub listofemails {
 		return $retval;
 	}
 }
+
+sub generate_edit_form : Runmode {
+	
+	my $app = shift;
+
+	my $mailerid = $app->query->param('mailer');
+	my $mailer = EMGaugeDB::Mailer->retrieve(id => $mailerid);
+
+	my @imgs = map {{
+		imgid => $_->id,
+		include => $_->include,
+		src => $_->src,
+		count => $_->count,
+		thmburl => $_->thmb,
+		thmbw => $_->thmbw,
+		thmbh => $_->thmbh,
+		size => $_->size,
+		width => $_->width,
+		height => $_->height,
+		found => $_->found,
+	}} $mailer->images;
+
+	my @lnks = map {{
+		lnkid => $_->id,
+		track => $_->track,
+		href => $_->href,
+	}} $mailer->links;
+
+	my $tpl = $app->load_tmpl('mailer/edit_meta_mailer.tpl', die_on_bad_params => 0);
+	$tpl->param({
+		mailerid => $mailerid,
+		name => $mailer->name,
+		subject => $mailer->subject,
+		sendername => $mailer->sendername,
+		senderemail => $mailer->senderemail,
+		imgs => \@imgs,
+		lnks => \@lnks,
+	});
+	
+	return $tpl->output;
+}
+
+sub save_meta_edited_mailer : Runmode {
+	
+	my $app = shift;
+	my $q = $app->query;
+	
+	my $dfv = {
+		required => [ qw{name subject sendername senderemail mailerid rm} ],
+		constraints => {
+			senderemail => 'email',
+		},
+		filters => 'trim',
+		msgs => {
+			prefix => 'err_',
+			any_errors => 'some_errors',
+		},
+	};
+	
+	my $check = Data::FormValidator->check($q, $dfv);
+	my $valids = $check->valid;
+	
+
+	my $mailer = EMGaugeDB::Mailer->retrieve(id => $valids->{mailerid});
+	 
+	if ($check->has_invalid or $check->has_missing) {
+		
+		my $tpl = $app->load_tmpl('mailer/edit_meta_mailer.tpl', die_on_bad_params => 0);
+
+		my @imgs = map {{
+			imgid => $_->id,
+			include => $_->include,
+			src => $_->src,
+			count => $_->count,
+			thmburl => $_->thmb,
+			thmbw => $_->thmbw,
+			thmbh => $_->thmbh,
+			size => $_->size,
+			width => $_->width,
+			height => $_->height,
+			found => $_->found,
+		}} $mailer->images;
+	
+		my @lnks = map {{
+			lnkid => $_->id,
+			track => $_->track,
+			href => $_->href,
+		}} $mailer->links;
+
+		$tpl->param({
+			imgs => \@imgs,
+			lnks => \@lnks,
+		});
+		$tpl->param($check->msgs);
+		$tpl->param($valids);
+		
+		return $tpl->output;
+	}
+	
+	$mailer->set(
+		name => $valids->{name},
+		subject => $valids->{subject},
+		sendername => $valids->{sendername},
+		senderemail => $valids->{senderemail},
+	);
+	$mailer->update;
+	
+	foreach ($mailer->images) {
+		$_->include(undef);
+		$_->update;
+	}
+	foreach ($q->param('img')) {
+		
+		my $img = EMGaugeDB::Images->retrieve(id => $_);
+		$img->include(1);
+		$img->update;
+	}
+	
+	foreach ($mailer->links) {
+		$_->track(undef);
+		$_->update;
+	}
+	foreach ($q->param('lnk')) {
+		my $lnk = EMGaugeDB::Links->retrieve(id => $_);
+		$lnk->track(1);
+		$lnk->update;
+	}
+
+	return "<strong>Mailer Saved</strong>";
+}
+
 
 1;

@@ -5,7 +5,7 @@
 		<link rel="stylesheet" href="/app/css/screen.css" type="text/css" media="screen, projection" />  
 		<link rel="stylesheet" href="/app/css/print.css" type="text/css" media="print" />  
 		<!--[if lt IE 8]><link rel="stylesheet" href="/app/css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
-		<link rel="stylesheet" href="/app/css/app.css" type="text/css" media="screen" />  
+		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen" />  
 		<title>Application: Sorry, We have an Error!</title>
 	</head>
 	<body>
