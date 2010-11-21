@@ -56,7 +56,7 @@
 									<select id="listid" name="listid">
 										<option value="0" selected="selected">Select List...</option>
 										<!-- TMPL_LOOP NAME=ALLLISTS -->
-										<option value="<!-- TMPL_VAR NAME=LISTID -->"><!-- TMPL_VAR NAME=LISTNAME --></option>
+										<option value="<!-- TMPL_VAR NAME=LISTID -->" source="<!-- TMPL_VAR NAME=LISTSOURCE -->"><!-- TMPL_VAR NAME=LISTNAME --></option>
 										<!-- /TMPL_LOOP -->
 									</select><br />
 									<span class="formHint">Not here? <a href="#">Create a New List</a></span>

@@ -196,7 +196,8 @@ form legend {
 }
 
 form legend.waiting {
-	padding-left: 25px;
+	padding-left: 20px;
+	background: url('../images/ajax-loader.gif') no-repeat left center;
 }
 
 label {

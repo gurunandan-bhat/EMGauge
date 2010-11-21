@@ -5,7 +5,7 @@ $(document).ready(function() {
 	
 	$('a.testlink').click(function() {
 		
-		$(this).parent('p').next('form.sendform').toggle();
+		$(this).parent('p').siblings('form.sendform').toggle();
 		return false;
 	});
 	
@@ -13,12 +13,15 @@ $(document).ready(function() {
 		
 		var lgnd = $(this).find('legend');
 		lgnd.addClass('waiting');
-		lgnd.next('div.teststatus').html('');	
+		lgnd.next('div.teststatus').html('');
+
+		var inpbox = lgnd.siblings('input[name=rcpt]');
 		
 		var qrystr = $(this).serialize();
 		$.get('mailer.cgi?' + qrystr, function(data) {
 			lgnd.next('div.teststatus').html(data);	
 			lgnd.removeClass('waiting');
+			inpbox.val('');
 		});
 		return false;
 	});
@@ -29,6 +32,8 @@ $(document).ready(function() {
 		formholder.siblings('p.throbber').show();
 
 		if ($(this).attr('state') == 1) {
+
+			formholder.siblings('p.throbber').hide();
 			formholder.html('');
 			$(this).attr('state', 0);
 			return false;

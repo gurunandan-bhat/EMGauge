@@ -91,6 +91,7 @@ sub save_step0 : Runmode {
 	my @alllists = map {{
 		LISTID => $_->id,
 		LISTNAME => $_->name,
+		LISTSOURCE => $_->source,
 	}} EMGaugeDB::List->retrieve_from_sql('active != 0 and createdby = \'' . $app->authen->username . '\'');
 	
 	$tpl->param(
