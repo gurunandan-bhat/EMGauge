@@ -79,15 +79,22 @@ while (my $row = $csv->getline($csvfh)) {
 		foreach (@recs) {
 			$_->set(%$rowhash);
 			$_->update;
-			EMGaugeDB::Listmembers->insert({list => $listid, recipient => $_->id});
+
+			if (! $_->subscriptions(list => $list->id)) {
+				$list->add_to_members({recipient => $_,});
+				++$recordcount;
+			}
 		}
 	}
 	else {
+
 		my $rec = EMGaugeDB::Recipient->insert($rowhash);
-		EMGaugeDB::Listmembers->insert({list => $listid, recipient => $rec->id})
+
+		if (! $rec->subscriptions(list => $list->id)) {
+			$list->add_to_members({recipient => $rec,});
+			++$recordcount;
+		}
 	}
-	
-	++$recordcount;
 }
 
 $pq->recordsin($recordcount);

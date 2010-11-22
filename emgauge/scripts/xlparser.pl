@@ -99,12 +99,14 @@ my $rdcell = sub {
 my $parser = Spreadsheet::ParseExcel->new(CellHandler => $rdcell, NotSetCell => 1);
 my $wb = $parser->Parse($fname);
 
-_add_recipient($rowhash, $list);
-++$recordcount;
+if (_add_recipient($rowhash, $list)) {
+	++$recordcount;
+};
 
 $pq->recordsin($recordcount);
 $pq->update;
-$list->records($recordcount);
+
+$list->records($recordcount + $list->records);
 $list->update;
 
 exit $jobid;
@@ -128,7 +130,7 @@ sub _add_recipient{
 		$rcpt->update();
 	}
 
-	my $inlist = $rcpt->subscriptions({list => $list->id});
+	my $inlist = $rcpt->subscriptions(list => $list->id);
 	
 	if (!$inlist) {
 		$list->add_to_members({recipient => $rcpt,});
