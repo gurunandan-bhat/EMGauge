@@ -14,7 +14,7 @@ use EMGaugeDB::Listmembers;
 use Getopt::Long;
 use Config::Simple;
 use Spreadsheet::ParseExcel;
-
+use Email::Valid;
 use Digest::SHA qw{sha1_hex};
 use Data::Serializer;
 
@@ -53,6 +53,7 @@ my $data;
 my $rowhash = {};
 my $prevrow = 1;
 my $recordcount = 0;
+my $validemail = 1;
 
 my $rdcell = sub {
 
@@ -60,11 +61,14 @@ my $rdcell = sub {
 	
 	return unless $group->[$wsidx];
 	
-	return if (! $row); # Dont read header row
+	return unless ($row); # Dont read header row
 
 	if ($row != $prevrow) {
-		++$recordcount if (_add_recipient($rowhash, $list));
-		$rowhash = {};
+		if ($validemail) {
+			++$recordcount if (_add_recipient($rowhash, $list));
+			$rowhash = {};
+		}
+		$validemail = 1;
 	}
 
 	my $value;
@@ -75,6 +79,12 @@ my $rdcell = sub {
 		}
 		else {
 			$value = ParseDate($cell->value()) ? UnixDate($cell->value(), '%Y/%m/%d') : undef;
+		}
+	}
+	elsif ($group->[$wsidx]->[$col] eq 'email') {
+		
+		if (! ($value = Email::Valid->address($cell->value()))) {
+			$validemail = 0;
 		}
 	}
 	else {
@@ -88,7 +98,9 @@ my $rdcell = sub {
 
 my $parser = Spreadsheet::ParseExcel->new(CellHandler => $rdcell, NotSetCell => 1);
 my $wb = $parser->Parse($fname);
+
 _add_recipient($rowhash, $list);
+++$recordcount;
 
 $pq->recordsin($recordcount);
 $pq->update;

@@ -142,7 +142,7 @@ sub save_step1 : Runmode {
 
 	if ($check->has_invalid or $check->has_missing) {
 
-		my $tpl = $app->load_tmpl('data/index.tpl', die_on_bad_params => 0);
+		my $tpl = $app->load_tmpl('data/save_step0.tpl', die_on_bad_params => 0);
 
 		my @alllists = map {{
 			LISTID => $_->id,
@@ -186,11 +186,25 @@ sub save_step1 : Runmode {
 	my $datacpyname = "$datafldr/$ofname$osufx";
 	my $upok = $app->query->upload($fname, $datacpyname);
 
-	die({type => 'error', msg => "Error Copying File $fname to $datacpyname: " . $q->cgi_error})
-		unless $upok;
+	die({
+		type => 'error', 
+		msg => "Error Copying File $fname to $datacpyname: " . $q->cgi_error
+	}) unless $upok;
 	
 	my $displayrows = $app->config_param('View.DisplayRows');
-	my $metaxl = qkparsexl($datacpyname, $displayrows);
+
+	my $metaxl;
+	$osufx =~ s/^\.//;
+	
+	if ($osufx =~ /^xls$/i) {
+		$metaxl = qkparsexl($datacpyname, $displayrows);
+	}
+	elsif ($osufx =~ /^csv$/i) {
+		$metaxl = qkparsecsv($datacpyname, $displayrows, "$ofname$osufx");
+	}
+	else {
+		die({type => 'error', msg => 'File Extension not recognised'});
+	}
 	
 	my $opttpl = $app->load_tmpl('data/map_select.tpl');
 	$opttpl->param(colmap => $mapping);
@@ -202,13 +216,14 @@ sub save_step1 : Runmode {
 		LISTID => $valids->{listid},
 		LISTSRC => $valids->{listsrc},
 		XLFNAME => $datacpyname,
+		XLFTYPE => uc($osufx),
 		SHEETS => scalar @{$metaxl},
 		METAXL => $metaxl,
 		LISTOPTS => $optstr,
 		DISPROWS => $displayrows,
 	);
 
-# 	return '<pre>' . Dumper($metaxl) . '</pre>';
+#	return '<pre>' . Dumper($metaxl) . '</pre>';
 	return $tpl->output;
 }
 
@@ -266,7 +281,7 @@ sub qkparsexl {
 			sheetnum => $wsidx + 1,
 			dsetnum => $wsidx,
 			totrows => $rmax - $rmin,
-			rows => $disprows,
+			disprows => ($rmax > $disprows) ? $disprows : $rmax,
 			cols => $colcount,
 			headers => $hdr->[$wsidx],
 			rows => $xl->[$wsidx],
@@ -278,13 +293,70 @@ sub qkparsexl {
 	return $metawb;
 }
 
+sub qkparsecsv {
+	
+	my $csvfile = shift;
+	my $disprows = shift || 5;
+	my $csvname = shift || 'Unknown.csv';
+
+	my $wsidx = 0;
+	
+	open my $csvfh, "<", $csvfile or die "Cannot Open CSV file: $!\n";
+	my $csv = Text::CSV_XS->new({binary => 1});
+
+	my ($hdr, $data);
+
+	my $cells = $csv->getline($csvfh);
+	my $col = 0;
+
+	foreach (@{$cells}) {
+		$hdr->[$wsidx]->[$col] = {
+			colname => $_ || 'No Header Found',
+		};
+		++$col;		
+	} 
+	my $colcount = $col;
+	
+	my $row;
+	foreach (0 .. ($disprows -1)) {
+		
+		$cells = $csv->getline($csvfh) or last;
+
+		$row = $_;
+		my $col = 0;
+		
+		foreach (@{$cells}) {
+			$data->[$wsidx]->[$row]->{cols}->[$col] =	{value => $_};
+			++$col;
+		} 
+	} 	
+	$disprows = $row + 1;
+	my $rowcount = $disprows;
+	while ($csvfh->getline) {
+		++$rowcount;
+	}
+	
+	my $metacsv->[$wsidx] = {
+		name => $csvname,
+		sheetnum => $wsidx + 1,
+		dsetnum => $wsidx,
+		totrows => $rowcount,
+		rows => $disprows,
+		cols => $colcount,
+		headers => $hdr->[$wsidx],
+		rows => $data->[$wsidx],
+	};
+	
+	return $metacsv;
+}
+
 sub save_step2 : Runmode {
 	
 	my $app = shift;
 	my $q = $app->query;
 	
-	my $fname = $app->query->param('xlname');
-
+	my $fname = $q->param('xlname');
+	my $ftype = $q->param('xltype');
 	my $listname = $q->param('listname');
 	my $listid = $q->param('listid');
 	my $listsrc = $q->param('listsrc');
@@ -310,7 +382,10 @@ sub save_step2 : Runmode {
 	});
 
 	$clnt->connect;
-	die({type => 'error', msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
+	die({
+		type => 'error', 
+		msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'
+	}) if $clnt->error;
 
 	my $list = $listid ?  EMGaugeDB::List->retrieve(id => $listid) :
 		EMGaugeDB::List->insert({
@@ -339,7 +414,7 @@ sub save_step2 : Runmode {
 	}) or die({type => 'error', msg => 'Could not Insert Job Description in Database'});
 
 	my $jobh = {
-		script => $app->config_param('Path.ParseXLCommand'),
+		script => $app->config_param('Path.Parse' . $ftype . 'Command'),
 		parsequeueid => $xlq->id,
 		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
 	};

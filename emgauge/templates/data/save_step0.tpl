@@ -12,7 +12,7 @@
 		<script type="text/javascript" src="js/jquery.progressbar.min.js"></script>    
 		<script type="text/javascript" src="js/list_upload.js"></script>    
 		<script type="text/javascript" src="js/xlwatch.js"></script>    
-		<title>Create Mailer</title>
+		<title>Create List</title>
     </head>
 	<body>
 		<div class="container">

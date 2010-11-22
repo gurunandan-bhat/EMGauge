@@ -12,7 +12,7 @@
  		<script type="text/javascript" src="js/jquery.validate.pack.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8rc3.pbar.min.js"></script>    
 		<script type="text/javascript" src="js/xlwatch.js"></script>    
-		<title>Create Mailer</title>
+		<title>Create List</title>
     </head>
 	<body>
 		<div class="container">
@@ -54,6 +54,7 @@
 								</tr>
 							</table>
 						</div>
+						<!-- /TMPL_IF -->
 					</div>
 					<div class="span-6 append-1 last">
 						<h2>Something Useful Here</h2>
