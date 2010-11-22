@@ -1201,6 +1201,7 @@ sub test_db_mailer : Runmode {
 			From => "$mlrsender <$mlrsenderemail>",
 			'Reply-To' => $mlrreplyto,
 			Subject => $mlrsubject,
+			'X-emgaugeid' => 'test' . $mlrid,
 		);
 	
 		$msg->attach(

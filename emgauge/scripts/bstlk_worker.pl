@@ -11,9 +11,9 @@ use Parallel::ForkManager;
 use Data::Dumper;
 use Config::Simple;
 use DBI;
-use Proc::Daemon;
 
-Proc::Daemon::Init();
+# use Proc::Daemon;
+# Proc::Daemon::Init();
 
 Log::Log4perl::easy_init({
 	level => $DEBUG,
@@ -24,7 +24,7 @@ Log::Log4perl::easy_init({
 my $clnt = Beanstalk::Client->new({
 	server => '127.0.0.1:11300',
 	default_tube =>'emgauge',
-	debug => 0,
+	debug => 1,
 });
 
 $clnt->watch('emgauge');
@@ -79,9 +79,11 @@ while (1) {
 	my $runas = $data->{runas};
 	my $jobid = $job->id;
 
-	my $script = $data->{script} . " -j $jobid'";
+	my $script = $data->{script} . " -j $jobid";
 	
 	$pmgr->start($schedule . '|' . $job->id) and next;
+
+	print "$script\n";
 	exec($script);
 
 	$pmgr->finish($job->id);

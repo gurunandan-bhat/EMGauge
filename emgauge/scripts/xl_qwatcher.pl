@@ -48,8 +48,8 @@ $pmgr->run_on_finish(
 		my ($pqid, $jobid) = split /\|/, $ident;
 
 		($exit_code == $jobid) ?
-			INFO "On Finish: Delivery for ParseID $pqid and Job $jobid Completed successfully" :
-			INFO "On Finish: Delivery with ParseID $pqid and JobID $jobid returned failure. Signal: $sgnl";
+			INFO "On Finish: Data upload for ParseID $pqid and Job $jobid Completed successfully" :
+			INFO "On Finish: Data upload for ParseID $pqid and JobID $jobid returned failure. Signal: $sgnl";
  
 		INFO "On Finish: Deleting Scheduled Job $jobid with ParseID $pqid";
 		if (! $clnt->delete($jobid)) {
