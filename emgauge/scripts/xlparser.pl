@@ -28,7 +28,6 @@ GetOptions(
 
 ($pqid and $jobid) || die "Parse and/or Job Ids not available";
 my $pq = EMGaugeDB::XLParseQueue->retrieve(id => $pqid) || exit $jobid;
-
 ($pq->bjobid == $jobid) or exit $jobid;
 
 my $fname = $pq->filename;

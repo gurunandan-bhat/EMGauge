@@ -12,8 +12,8 @@ use Data::Dumper;
 use Config::Simple;
 use DBI;
 
-# use Proc::Daemon;
-# Proc::Daemon::Init();
+use Proc::Daemon;
+Proc::Daemon::Init();
 
 Log::Log4perl::easy_init({
 	level => $DEBUG,
