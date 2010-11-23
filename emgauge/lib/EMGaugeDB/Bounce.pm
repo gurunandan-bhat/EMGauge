@@ -11,12 +11,14 @@ __PACKAGE__->table('bounces');
 
 __PACKAGE__->columns(Primary => qw{id});
 __PACKAGE__->columns(Others => qw{
-	recipient
 	email
+	recipient
+	mailer
+	schedule
 	status
-	bhost
 	reason
 	bdate
+	bhost
 });
 
 1;

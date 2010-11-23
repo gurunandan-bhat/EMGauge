@@ -335,13 +335,14 @@ sub qkparsecsv {
 	while ($csvfh->getline) {
 		++$rowcount;
 	}
-	
-	my $metacsv->[$wsidx] = {
+
+	my $metacsv;
+	$metacsv->[$wsidx] = {
 		name => $csvname,
 		sheetnum => $wsidx + 1,
 		dsetnum => $wsidx,
 		totrows => $rowcount,
-		rows => $disprows,
+		disprows => $disprows,
 		cols => $colcount,
 		headers => $hdr->[$wsidx],
 		rows => $data->[$wsidx],

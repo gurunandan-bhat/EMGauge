@@ -239,7 +239,7 @@ foreach(@recipients) {
 			custom3 => $_->{custom3},
 			custom4 => $_->{custom4},
 		}),
-		'X-Emgaugeid' => 'emgauge' . join('|', ($_->{id}, $sid, $mlrid)), 
+		'X-Emgaugeid' => join('|', ($_->{id}, $sid, $mlrid)), 
 	);
 
 	my $digest = sha1_hex($cfg->param('Mail.DigestSekrit') . $_->{email});

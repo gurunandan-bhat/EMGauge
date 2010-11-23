@@ -41,7 +41,7 @@
 								<p>
 									<strong>There are <!-- TMPL_VAR NAME=totrows --> Rows in this Worksheet.</strong><br />
 									Choose a Database field for each column in your Worksheet(s).<br />
-									<a id="link<!-- TMPL_VAR NAME=sheetnum -->" href="#">First <!-- TMPL_VAR NAME=DISPROWS --> rows of this Worksheet</a>
+									<a id="link<!-- TMPL_VAR NAME=sheetnum -->" href="#">First <!-- TMPL_VAR NAME=disprows --> rows of this Worksheet</a>
 								</p>
 								<table width="99%" cellspacing="0" cellpadding="0">
 									<tr><th>Your Columns</th><th>Database Fileds</th></tr>

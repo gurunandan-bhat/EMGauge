@@ -126,22 +126,30 @@ textarea {
 .pager {
 	text-align: center;
 	position: relative;
+	padding: 4px 50px;
 }
 
 .pager .prevlink {
 	position: absolute;
-	left: 10px;
+	left: 0px;
 	top: 4px;
 }
 
 .pager .nextlink {
 	position: absolute;
-	right: 10px;
+	right: 0px;
 	top: 4px;
 }
 
 .pager p {
 	line-height: 20px;
+}
+
+.pager p span.thispage {
+	background: #185257;
+	color: #fff;
+	font-weight: bold;
+	padding: 4px;
 }
 
 .menucol h1 {
