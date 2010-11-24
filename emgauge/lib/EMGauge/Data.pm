@@ -59,7 +59,7 @@ sub list : StartRunmode {
 	my $page = $app->query->param('page') || 1;
 	my $pager = EMGaugeDB::List->pager(
 		where => {active => {'!=', 0}, createdby => $app->authen->username},
-		order_by => 'id desc',
+		order_by => 'createdon desc',
 		per_page => $app->config_param('View.ItemsPerPage'),
 		page => $page,
 	);
