@@ -45,23 +45,23 @@
 									<input class="textInput" type="text" id="list" name="list" value="<!-- TMPL_VAR NAME=list -->" /><br />
 									<span class="formHint">No. <a href="#">Add to an existing List</a></span>
 								</p>
-								<p>
-									<label for="listsrc">Source:</label> <!-- TMPL_VAR NAME=err_listsrc --><br />
-									<textarea type="text" id="listsrc" name="listsrc" rows="4"><!-- TMPL_VAR NAME=listsrc --></textarea><br />
-								</p>
 							</div>					
 							<div id="oldlist">
 								<p>
 									<label for="listid">Add Recipients to an earlier List:</label> <!-- TMPL_VAR NAME=err_listid_or_name --><br />
 									<select id="listid" name="listid">
-										<option value="0" selected="selected">Select List...</option>
+										<option value="" selected="selected">Select List...</option>
 										<!-- TMPL_LOOP NAME=ALLLISTS -->
-										<option value="<!-- TMPL_VAR NAME=LISTID -->" source="<!-- TMPL_VAR NAME=LISTSOURCE -->"><!-- TMPL_VAR NAME=LISTNAME --></option>
+										<option value="<!-- TMPL_VAR NAME=LISTID -->"<!-- TMPL_IF NAME=LISTCHECKED --> selected="selected"<!-- /TMPL_IF -->><!-- TMPL_VAR NAME=LISTNAME --></option>
 										<!-- /TMPL_LOOP -->
 									</select><br />
 									<span class="formHint">Not here? <a href="#">Create a New List</a></span>
 								</p>
 							</div>
+							<p>
+								<label for="listsrc">Source:</label> <!-- TMPL_VAR NAME=err_listsrc --><br />
+								<textarea type="text" id="listsrc" name="listsrc" rows="4"><!-- TMPL_VAR NAME=listsrc --></textarea><br />
+							</p>
 							<p>
 								<label for="datafile">Select a Spreadsheet: </label> <!-- TMPL_VAR NAME=err_datafile --><br />
 								<input type="file" name="datafile" id="datafile" /><br />

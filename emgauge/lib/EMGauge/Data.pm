@@ -122,15 +122,14 @@ sub save_step1 : Runmode {
 	my $q = $app->query;
 	
 	my $dfv = {
-		required => [ qw{datafile} ],
+		required => [ qw{datafile listsrc} ],
 		require_some => {
 			listid_or_name => [1, qw{listid list}],
 		},
-		dependencies => {
-			name => 'listsrc',
-			list => [qw{listsrc}],
-		},
 		filters => 'trim',
+		constraint_methods => {
+			listid => sub {shift > 0},
+		},
 		msgs => {
 			prefix => 'err_',
 			any_errors => 'some_errors',
@@ -144,9 +143,11 @@ sub save_step1 : Runmode {
 
 		my $tpl = $app->load_tmpl('data/save_step0.tpl', die_on_bad_params => 0);
 
+		my $validlistid = exists $valids->{listid};
 		my @alllists = map {{
 			LISTID => $_->id,
 			LISTNAME => $_->name,
+			LISTCHECKED => ($validlistid and ($valids->{listid} == $_)) ? 1 : 0,
 		}} EMGaugeDB::List->retrieve_from_sql('active != 0');
 		
 		$tpl->param(

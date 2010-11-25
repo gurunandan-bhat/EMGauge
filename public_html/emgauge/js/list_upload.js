@@ -2,8 +2,8 @@ $(document).ready(function() {
 
 	$('#metalist').validate({
 		rules: {
-			listid: 'required',			
-			datafile: 'required'
+			datafile: 'required',
+			listsrc: 'required'
 		},
 		messages: {
 			listid: 'Please select a List to add to',			
@@ -14,17 +14,8 @@ $(document).ready(function() {
 		errorClass: 'emgerr'
 	});
 
-	$('#alterlist').validate({
-		rules: {
-			selectedlist: {
-				required: true,
-				minlength: 1
-			}
-		},
-		errorClass: 'emgerr'
-	});
-
 	$('#oldlist').hide();
+	$('#list').rules('add', {required: true});
 	
 	$('#oldlist a').click(function() {
 		
@@ -33,7 +24,6 @@ $(document).ready(function() {
 		$('#newlist').show();				
 		
 		$('#list').rules('add', {required: true});
-		$('#listsrc').rules('add', {required: true});
 		$('#listid').rules('remove');
 
 		$('#oldlist').hide();
@@ -44,13 +34,11 @@ $(document).ready(function() {
 	$('#newlist a').click(function() {
 
 		$('input#list').val('');
-		$('textarea#listsrc').val('');
 		
 		$('#oldlist').show();		
 
-		$('#listid').rules('add', {required: true});		
+		$('#listid').rules('add', {required: true, min: 1});		
 		$('#list').rules('remove');		
-		$('#listsrc').rules('remove');
 
 		$('#newlist').hide();		
 
