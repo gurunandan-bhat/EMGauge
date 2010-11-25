@@ -73,6 +73,8 @@
 						</form>
 					</div>
 					<div class="span-6 append-1 last">
+						<p>Changed your mind? Want to Start Over from the beginning? <a href="mailer.cgi?rm=save_step0">Click here</a> </p>
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>

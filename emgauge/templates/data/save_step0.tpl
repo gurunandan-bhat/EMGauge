@@ -75,8 +75,8 @@
 						</form>
 					</div>
 					<div class="span-6 append-1 last">
-						<h2>Uploads in Progress </h2>
 						<!-- TMPL_IF NAME=WATCHSHEETID -->
+						<h2>Uploads in Progress </h2>
 						<p><strong><!-- TMPL_VAR NAME=WATCHSHEET --></strong></p>
 						<div id="goodbar"></div>
 						<p><a href="#" id="showdetail">Show Details</a></p>
@@ -97,6 +97,15 @@
 							</table>
 						</div>
 						<!-- /TMPL_IF -->
+						<h1 class="sectionhead" style="margin-bottom: 0.5em;">Have you Checked that: (Important)</h1>
+						<ol>
+							<li>The file is a valid Excel or CSV file with an extension <strong>.xls</strong> or <strong>.csv</strong></li>
+							<li>The file is <strong>not</strong>  created as an <strong>xlsx</strong> file with Office 2007. <strong>xls</strong> files created by Office 2007 are fine
+							<li>The first row is not blank and contains the field names</li>
+							<li>That you have at least one column with emails</li>
+							<li>For CSV files, dates are always in the format YYYY-MM-DD HH:MM:SS (the time stamp HH... is optional)</li>
+						</ol>
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>

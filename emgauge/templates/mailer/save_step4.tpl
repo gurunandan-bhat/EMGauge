@@ -47,11 +47,11 @@
 						</form>
 					</div>
 					<div class="span-6 append-1 last listentry">
-						<h1><!-- TMPL_VAR NAME=MAILER --></h1>
+						<h1><!-- TMPL_VAR NAME=MAILER --> <a href="<!-- TMPL_VAR NAME=MAILERLINK -->" target="_blank">Preview</a></h1>
 						<h2>(For <!-- TMPL_VAR NAME=CAMPAIGN -->)</h2>
-						<p><a href="<!-- TMPL_VAR NAME=MAILERLINK -->" target="_blank">Preview</a></p>
 						<pre><!-- TMPL_VAR NAME=DUMPER --></pre>
 						<p>Changed your mind? Want to Start Over from the beginning? <a href="mailer.cgi?rm=save_step0">Click here</a> </p>
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>

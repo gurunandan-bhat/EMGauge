@@ -28,6 +28,10 @@ h1.sectionhead {
 	color: #818536;
 }
 
+h1#tight {
+	margin-bottom: 0.5em;	
+}
+
 h2 {
 	font-size: 1.2em;
 }

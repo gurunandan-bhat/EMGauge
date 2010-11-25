@@ -61,6 +61,9 @@
 						<div class="span-6 append-1 last listentry">
 							<h1>Importing into List "<!-- TMPL_VAR NAME=LIST -->"</h1>
 							<h2>Worksheet <!-- TMPL_VAR NAME=sheetnum --> of <!-- TMPL_VAR NAME=SHEETS -->: <!-- TMPL_VAR NAME=name --><br /> Rows: <!-- TMPL_VAR NAME=totrows --></h2>
+							<!-- TMPL_IF NAME=__first__ -->
+								<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
+							<!-- /TMPL_IF -->
 						</div>
 					</div>
 				</div>

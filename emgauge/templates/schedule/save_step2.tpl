@@ -66,12 +66,13 @@
 						</form>
 					</div>
 					<div class="span-8 append-1 last">
-						<h1>Schedule Details</h1>
+						<h1 class="sectionhead" style="margin-bottom: 0.5em;">Schedule Details</h1>
 						<table width="100%" cellspacing="0" cellpadding="2" border="0">
-							<tr><th style="vertical-align: top;">Schedule: </th><td><!-- TMPL_VAR NAME=SCHEDULENAME --></td></tr>
-							<tr><th style="vertical-align: top;">Mailer: </th><td><!-- TMPL_VAR NAME=MAILERNAME --></td></tr>
-							<tr><th style="vertical-align: top;">Recipients: </th><td><!-- TMPL_VAR NAME=LISTNAMES --></td></tr>
+							<tr><td style="vertical-align: top;">Schedule: </td><td><!-- TMPL_VAR NAME=SCHEDULENAME --></td></tr>
+							<tr><td style="vertical-align: top;">Mailer: </td><td><!-- TMPL_VAR NAME=MAILERNAME --></td></tr>
+							<tr><td style="vertical-align: top;">Recipients: </td><td><!-- TMPL_VAR NAME=LISTNAMES --></td></tr>
 						</table>
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>

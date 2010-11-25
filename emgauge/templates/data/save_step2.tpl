@@ -57,7 +57,7 @@
 						<!-- /TMPL_IF -->
 					</div>
 					<div class="span-6 append-1 last">
-						<h2>Something Useful Here</h2>
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>

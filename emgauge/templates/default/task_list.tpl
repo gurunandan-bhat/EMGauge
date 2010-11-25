@@ -1,4 +1,4 @@
-<h1 class="sectionhead">Other Tasks</h1>
+<h1 class="sectionhead" id="tight">Other Tasks</h1>
 <ul>
 	<li><a href="mailer.cgi?rm=save_step0">Create a New Mailer</a></li>
 	<li><a href="data.cgi?rm=save_step0">Create a New List</a></li>

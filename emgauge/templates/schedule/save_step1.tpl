@@ -28,7 +28,7 @@
 			</div> 
 			<div class="prepend-3 span-18 append-3 last formholder">
 				<div class="innerholder">
-					<div class="prepend-2 span-14 append-2 last">
+					<div class="prepend-1 span-13 last">
 						<!-- TMPL_IF NAME=some_errors -->
 						<p class="error">
 							Some fields were either invalid or missing. 
@@ -42,8 +42,8 @@
 						</p>
 					</div>
 					<form action="schedule.cgi" method="post" id="schedule_step1">
-						<div class="prepend-2 span-7">
-							<h5 id="checklist">(Un-)Check to (Un-)Assign <!-- TMPL_VAR NAME=err_assignlists --></h5>
+						<div class="prepend-1 span-6 border">
+							<h1 class="sectionhead" style="margin-bottom: 0.3em; text-align: center;">(Un)Check to (Un)Assign <!-- TMPL_VAR NAME=err_assignlists --></h1>
 							<div style="height: 240px; overflow-y: auto; overflow-x: hidden; margin-bottom: 25px;">
 							<table>
 								<!-- TMPL_LOOP NAME=ASSIGNEDLISTS -->
@@ -59,8 +59,8 @@
 							</table>
 							</div>
 						</div>
-						<div class="span-7 append-2 last">
-							<h5>Assigned Lists</h5>
+						<div class="span-6">
+							<h1 class="sectionhead" style="margin-bottom: 0.3em; text-align: center;">Assigned Lists</h1>
 							<table id="assignedtable">
 								<!-- TMPL_LOOP NAME=ASSIGNEDLISTS -->
 								<tr listid="<!-- TMPL_VAR NAME=LISTID -->" listname="<!-- TMPL_VAR NAME=LISTNAME -->"<!-- TMPL_UNLESS NAME=__odd__ --> class="odd"<!-- /TMPL_UNLESS>>
@@ -69,7 +69,10 @@
 								<!-- /TMPL_LOOP -->
 							</table>
 						</div>
-						<hr />
+						<div class="span-4 append-1 last">
+							<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
+						</div>
+						<hr class="space" />
 						<div style="margin: 5px auto; width: 200px;">
 							<input type="reset" name="reset" value="Reset" />
 							<input type="submit" name="next" value="Next" />

@@ -60,8 +60,8 @@
 							</div>					
 						</form>
 					</div>
-					<div class="span-7 last">
-						<h1>Recent Mailers</h1>
+					<div class="span-6 append-1 last">
+						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>
 			</div>
