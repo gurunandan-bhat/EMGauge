@@ -44,4 +44,10 @@ $(document).ready(function() {
 
 		return false;
 	});
+	
+	$('select#listid').live('change', function() {
+
+		var currsrc = $('select#listid :selected').attr('source');
+		$('textarea#listsrc').val(currsrc);
+	});
 });
