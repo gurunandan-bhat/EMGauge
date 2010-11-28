@@ -392,12 +392,17 @@ sub save_step2 : Runmode {
 	my $list = $listid ?  EMGaugeDB::List->retrieve(id => $listid) :
 		EMGaugeDB::List->insert({
 			name => $listname,
-			source => $listsrc,
 			records => 0,
 			active => 1,
-			filename => $fname,
 			createdby => $app->authen->username,
 		});
+		
+	my $filenames = join ', ', ($list->filename, $fname);
+	$list->set(
+		source => $listsrc,
+		filename => $filenames,
+	);
+	$list->update;
 
 	my $srlzr = Data::Serializer->new(
 		serializer => 'Storable',

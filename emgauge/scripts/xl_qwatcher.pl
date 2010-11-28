@@ -80,6 +80,7 @@ while (1) {
 	my $script = $data->{script} . " -p $pqid -j $jobid";
 	
 	$pmgr->start("$pqid|$jobid") and next;
+
 	exec($script);
 
 	$pmgr->finish($job->id);
