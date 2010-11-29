@@ -89,11 +89,8 @@ while (my $row = $csv->getline($csvfh)) {
 	else {
 
 		my $rec = EMGaugeDB::Recipient->insert($rowhash);
-
-		if (! $rec->subscriptions(list => $list->id)) {
-			$list->add_to_members({recipient => $rec,});
-			++$recordcount;
-		}
+		$list->add_to_members({recipient => $rec,});
+		++$recordcount;
 	}
 }
 
