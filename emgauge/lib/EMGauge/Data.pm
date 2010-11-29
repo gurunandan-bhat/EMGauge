@@ -379,15 +379,16 @@ sub save_step2 : Runmode {
 	
 	my $clnt = Beanstalk::Client->new({
 		server => $app->config_param('JobManager.BeanstalkServer'),
-		default_tube => $app->config_param('JobManager.DefaultDataTube'),
+		default_tube => $app->config_param('JobManager.DefaultTube'),
 		debug => 0,
 	});
 
 	$clnt->connect;
 	die({
 		type => 'error', 
-		msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'
+		msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong>. Please contact guru@dygnos.com with this error message'
 	}) if $clnt->error;
+	$clnt->use($app->config_param('JobManager.DefaultTube'));
 
 	my $list = $listid ?  EMGaugeDB::List->retrieve(id => $listid) :
 		EMGaugeDB::List->insert({
@@ -420,9 +421,11 @@ sub save_step2 : Runmode {
 		createdby => $app->authen->username,
 	}) or die({type => 'error', msg => 'Could not Insert Job Description in Database'});
 
+	my $parsequeueid = $xlq->id;
 	my $jobh = {
-		script => $app->config_param('Path.Parse' . $ftype . 'Command'),
-		parsequeueid => $xlq->id,
+		type => 'List Upload',
+		dbid => $parsequeueid,
+		script => $app->config_param('Path.Parse' . $ftype . 'Command') . " -p $parsequeueid",
 		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
 	};
 

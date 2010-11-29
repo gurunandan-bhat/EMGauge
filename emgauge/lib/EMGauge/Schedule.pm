@@ -400,8 +400,10 @@ sub save_schedule : Runmode {
 	});
 
 	$clnt->connect;
-	die({type => 'error', msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
-
+	die({
+		type => 'error', 
+		msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong>. Please contact guru@dygnos.com with this error message'
+	}) if $clnt->error;
 	$clnt->use($app->config_param('JobManager.DefaultTube'));
 	
 	my $srlzr = Data::Serializer->new(
@@ -412,14 +414,13 @@ sub save_schedule : Runmode {
 		compress   => 1,
 	);
 	
-	my $insertedon = strftime('%Y/%m/%d %H:%M:%S', localtime);
 	my $scheduletstmp = UnixDate("$scheduledfor", '%Y/%m/%d %H:%M:%S');
-	
+	my $scheduleid = $schedule->id;
 	my $jobh = {
-		schedule => $schedule->id,
-		script => $app->config_param('Path.DeliverCommand') . ' -s ' . $schedule->id,
-		insertedon => $insertedon,
-		runas => $app->config_param('JobManager.RunAs'),
+		type => 'Mail Delivery',
+		dbid => $scheduleid,
+		script => $app->config_param('Path.DeliverCommand') . " -s $scheduleid",
+		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
 	};
 
 	my $job = $clnt->put({

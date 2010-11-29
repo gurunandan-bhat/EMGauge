@@ -15,19 +15,25 @@ use DBI;
 use Proc::Daemon;
 Proc::Daemon::Init();
 
+use lib qw{/home/nandan/workspace/EMGauge/emgauge/lib};
+use EMGauge::Constants;
+
+my $cfg = new Config::Simple($EMGauge::Constants::confdir . 'EMGauge.conf');
+
+
 Log::Log4perl::easy_init({
 	level => $DEBUG,
-	file => '>> /home/nandan/beanstalk_worker_xlparser.log',
+	file => '>> /home/nandan/beanstalk_worker.log',
 	layout => 'Beanstalk Worker: %c [%d] Line No: %L: %m%n',
 });
 
 my $clnt = Beanstalk::Client->new({
 	server => '127.0.0.1:11300',
-	default_tube =>'parsexl',
+	default_tube =>'emgauge',
 	debug => 1,
 });
 
-$clnt->watch('parsexl');
+$clnt->watch('emgauge');
 $clnt->connect || LOGDIE "Cannot Connect to Queue Manager" . $clnt->error;
 
 my $pmgr = Parallel::ForkManager->new(5);
@@ -35,9 +41,9 @@ my $pmgr = Parallel::ForkManager->new(5);
 $pmgr->run_on_start(
 	sub {
 		my ($pid, $ident) = @_;
-		my ($pqid, $jobid) = split /\|/, $ident;
-		INFO "On Start: Burying Scheduled Job $jobid with ParseID $pqid";
-		INFO "On Start: Error Burying Scheduled Job $jobid with ParseID $pqid: " . $clnt->error 
+		my ($type, $dbid, $jobid) = split /\|/, $ident;
+		INFO "Start $type: Burying Job $jobid with DBId $dbid";
+		INFO "Start $type: Error Burying Job $jobid with DBId $dbid: " . $clnt->error 
 			unless $clnt->bury($jobid);
 	}
 );
@@ -45,15 +51,15 @@ $pmgr->run_on_start(
 $pmgr->run_on_finish(
 	sub {
 		my ($pid, $exit_code, $ident, $sgnl) = @_;
-		my ($pqid, $jobid) = split /\|/, $ident;
+		my ($type, $dbid, $jobid) = split /\|/, $ident;
 
 		($exit_code == $jobid) ?
-			INFO "On Finish: Data upload for ParseID $pqid and Job $jobid Completed successfully" :
-			INFO "On Finish: Data upload for ParseID $pqid and JobID $jobid returned failure. Signal: $sgnl";
+			INFO "Finish $type: Delivery for DBId $dbid and Job $jobid Completed successfully" :
+			INFO "Finish $type: Delivery with DBId $dbid and JobID $jobid returned failure. Signal: $sgnl";
  
-		INFO "On Finish: Deleting Scheduled Job $jobid with ParseID $pqid";
+		INFO "Finish $type: Deleting Job $jobid with DBId $dbid";
 		if (! $clnt->delete($jobid)) {
-			INFO "On Finish: Error Deleting Scheduled Job $jobid with ParseID $pqid: " . $clnt->error;
+			INFO "Finish $type: Error Deleting Job $jobid with DBID $dbid: " . $clnt->error;
 		}
 	}
 );
@@ -75,12 +81,12 @@ while (1) {
 
 	my $data = $srlzr->deserialize($job->data);
 
-	my $pqid = $data->{parsequeueid};
+	my $dbid = $data->{dbid};
 	my $jobid = $job->id;
-	my $script = $data->{script} . " -p $pqid -j $jobid";
-	
-	$pmgr->start("$pqid|$jobid") and next;
 
+	my $type = $data->{type},
+	my $script = $data->{script} . " -j $jobid";
+	$pmgr->start("$type|$dbid|$jobid") and next;
 	exec($script);
 
 	$pmgr->finish($job->id);
