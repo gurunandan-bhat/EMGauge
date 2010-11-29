@@ -166,7 +166,6 @@ foreach my $lnk ($mailer->links) {
 	if ($lnk->track) {
 		
 		my @inclnks = $tree->look_down(
-			_tag => 'a',
 			href => $lnk->href,
 		);
 

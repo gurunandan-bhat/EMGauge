@@ -44,7 +44,10 @@
 								<!-- TMPL_LOOP NAME=lnks -->
 								<tr<!-- TMPL_IF NAME=__odd__ --> class="even"<!-- /TMPL_IF -->>
 									<td>
-										<!-- TMPL_IF NAME=show --><input type="checkbox" name="filelnk" value="<!-- TMPL_VAR NAME=__counter__ -->" <!-- TMPL_IF NAME=track -->checked="checked"<!-- /TMPL_IF --> /><!-- /TMPL_IF -->
+										<!-- TMPL_IF NAME=show -->
+										  <input type="checkbox" name="filelnk" value="<!-- TMPL_VAR NAME=__counter__ -->" <!-- TMPL_IF NAME=track -->checked="checked"<!-- /TMPL_IF --> />
+										  <!-- TMPL_IF NAME=imap --><em>Map</em><!-- /TMPL_IF -->
+										<!-- /TMPL_IF -->
 									</td>
 									<td>
 										<a href="<!-- TMPL_VAR NAME=myhref -->" target="_blank"><!-- TMPL_VAR NAME=href --></a>

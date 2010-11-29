@@ -298,12 +298,6 @@ sub parse_htmlfile {
 
 	# Use Images and Links if file has been parsed once and the data structure is passed to us
 
-	my ($oldimgs, $oldlnks);
-	if (my $mdata = shift) {
-		$oldimgs = $mdata->{htmlfile}->{imgs};
-		$oldlnks = $mdata->{htmlfile}->{lnks};
-	}
-
 	my $filedir = (fileparse($filename))[1]; # directory path 
 
 	my $appfldr = $app->config_param('Path.AppBase');
@@ -319,7 +313,7 @@ sub parse_htmlfile {
 
 	my %imgfiles;
 	NEXTTAG:
-	while (my $tag = $p->get_tag('img', 'a')) {
+	while (my $tag = $p->get_tag('img', 'a', 'map')) {
 		if ($tag->[0] eq 'img') { # image!
 
 			my $imgsrc = $tag->[1]->{src};
@@ -334,6 +328,9 @@ sub parse_htmlfile {
 			my $imgpath = File::Spec->canonpath("$filedir/$imgsrc");
 			my $imgrelpath = File::Spec->abs2rel($imgpath, $appfldr);
 
+            my $imgmap = $tag->[1]->{usemap} || undef;
+            $imgmap =~ s/^#//;
+             
 			unless (-e $imgpath) { # say does not exist and move on
 				push @tmpimg, {
 					src => $imgsrc,
@@ -346,6 +343,7 @@ sub parse_htmlfile {
 					thmb => undef,
 					thmbw => undef,
 					thmbh => undef,
+					imap => $imgmap,
 					found => 0,
 				};
 				next NEXTTAG;
@@ -355,16 +353,6 @@ sub parse_htmlfile {
 			# TODO Is a thumbnail always required? Avoid making one when not required.
 			my $thumbnail = $app->make_thumbnail($imgpath);
 			my $fsize = -s _;
-
-			# Check if image was included earlier (only used when called from save_edited_mailer)
-			my $include = 0;
-			if ($oldimgs) {
-				foreach (@{$oldimgs}) {
-					next unless $_->{fullsrc} eq $imgpath;
-					$include = $_->{include};
-					last;
-				}
-			}
 
 			# Add to imagelist structure
 			push @tmpimg, {
@@ -378,8 +366,9 @@ sub parse_htmlfile {
 				thmburl => $thumbnail->{url},
 				thmbw => $thumbnail->{w},
 				thmbh => $thumbnail->{h},
+                imap => $imgmap,
 				found => 1,
-				include => $include,
+				include => undef,
 			};
 		}
 		elsif ($tag->[0] eq 'a') { # link!
@@ -391,23 +380,40 @@ sub parse_htmlfile {
 
 			my $myhref = $urischm ? $href : "$relpath/$href";
 
-			my $track = 0;
-			if ($oldlnks) {
-				foreach (@{$oldlnks}) {
-					next unless $_->{href} eq $href;
-					$track = $_->{track};
-					last;
-				}
-			}
-
 			push @tmplnk, {
 				myhref => $myhref,
 				href => $href,
 				target => $tag->[1]->{target},
 				title => $tag->[1]->{title},
-				track => $track,
+				track => undef,
 				show => ! ($href =~ /\{\$/),
 			};
+		}
+		elsif ($tag->[0] eq 'map') { # imagemap!
+			
+			my $mapname = $tag->[1]->{name};
+			
+			while (my $innertag = $p->get_tag('area', '/map')) {
+				
+				last if ($innertag->[0] eq '/map');
+				
+	            my $href = $innertag->[1]->{href} || undef;
+	            next if ((! $href) or ($href eq '#'));
+	
+	            my ($urischm, $uriauth, $uripath, $uriqry, $urifrgmnt) = URI::Split::uri_split($href);
+	
+	            my $myhref = $urischm ? $href : "$relpath/$href";
+	
+	            push @tmplnk, {
+	                myhref => $myhref,
+	                href => $href,
+	                target => $tag->[1]->{target},
+	                title => $tag->[1]->{title},
+	                track => undef,
+	                imap => $mapname,
+	                show => ! ($href =~ /\{\$/),
+	            };
+			}
 		}
 	}
 
@@ -715,6 +721,7 @@ sub save_mailer : Runmode {
 			thmb => $_->{thmburl},
 			thmbw => $_->{thmbw},
 			thmbh => $_->{thmbh},
+			imap => $_->{imap},
 			found => $_->{found},
 			include => $_->{include},
 		});
@@ -727,6 +734,7 @@ sub save_mailer : Runmode {
 			target => $_->{target},
 			title => $_->{title},
 			track => $_->{track},
+			imap => $_->{imap},
 		});
 	}
 
@@ -1272,6 +1280,7 @@ sub generate_edit_form : Runmode {
 		size => $_->size,
 		width => $_->width,
 		height => $_->height,
+		imap => $_->imap,
 		found => $_->found,
 	}} $mailer->images;
 
@@ -1279,6 +1288,7 @@ sub generate_edit_form : Runmode {
 		lnkid => $_->id,
 		track => $_->track,
 		href => $_->href,
+        imap => $_->imap,
 	}} $mailer->links;
 
 	my $tpl = $app->load_tmpl('mailer/edit_meta_mailer.tpl', die_on_bad_params => 0);

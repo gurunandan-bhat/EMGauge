@@ -23,6 +23,7 @@ __PACKAGE__->columns(Others => qw{
 	thmb
 	thmbw
 	thmbh
+	imap
 	found
 	include
 });

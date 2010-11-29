@@ -17,6 +17,7 @@ __PACKAGE__->columns(Others => qw{
 	target
 	title
 	track
+	imap
 });
 
 __PACKAGE__->has_a(mailer => 'EMGaugeDB::Mailer');

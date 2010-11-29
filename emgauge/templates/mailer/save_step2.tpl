@@ -49,8 +49,11 @@
 								<!-- TMPL_LOOP NAME=imgs -->
 								<!-- TMPL_IF NAME=found -->	
 								<tr<!-- TMPL_IF NAME=__odd__ --> class="even"<!-- /TMPL_IF -->>
-									<td><input type="checkbox" name="fileimg" value="<!-- TMPL_VAR NAME=__counter__ -->" <!-- TMPL_IF NAME=include -->checked="checked"<!-- /TMPL_IF --> /></td>
 									<td>
+									   <input type="checkbox" name="fileimg" value="<!-- TMPL_VAR NAME=__counter__ -->" <!-- TMPL_IF NAME=include -->checked="checked"<!-- /TMPL_IF --> />
+									   <!-- TMPL_IF NAME=imap --><em>Map</em><!-- /TMPL_IF -->
+									</td>
+									<td>									  
 										<a href="#" class="openup"><!-- TMPL_VAR NAME=src --></a> (<!-- TMPL_VAR NAME=count -->)
 										<div class="thumbnail"><img src="<!-- TMPL_VAR NAME=thmburl -->" width="<!-- TMPL_VAR NAME=thmbw -->" height="<!-- TMPL_VAR NAME=thmbh -->" /></div>
 									</td>

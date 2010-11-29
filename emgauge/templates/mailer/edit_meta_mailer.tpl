@@ -42,7 +42,7 @@
 				<tr<!-- TMPL_IF NAME=__odd__ --> class="even"<!-- /TMPL_IF -->>
 					<td><input type="checkbox" name="img" value="<!-- TMPL_VAR NAME=imgid -->" <!-- TMPL_IF NAME=include -->checked="checked"<!-- /TMPL_IF --> /></td>
 					<td>
-						<a href="#" class="openup"><!-- TMPL_VAR NAME=src --></a> (<!-- TMPL_VAR NAME=count -->)
+						<a href="#" class="openup"><!-- TMPL_VAR NAME=src --></a> (<!-- TMPL_VAR NAME=count -->) <!-- TMPL_IF NAME=imap -->Map<!-- /TMPL_IF -->
 						<div class="thumbnail"><img src="<!-- TMPL_VAR NAME=thmburl -->" width="<!-- TMPL_VAR NAME=thmbw -->" height="<!-- TMPL_VAR NAME=thmbh -->" /></div>
 					</td>
 					<td><!-- TMPL_VAR NAME=size --></td>
@@ -50,7 +50,11 @@
 				</tr>
 				<!-- TMPL_ELSE -->
 				<tr class="error">
-					<td></td><td><!-- TMPL_VAR NAME=src --></td><td colspan="2">Missing. Add &amp; Re-upload</td>
+					<td></td>
+					<td>
+					  <!-- TMPL_VAR NAME=src --> <!-- TMPL_IF NAME=imap -->Map<!-- /TMPL_IF -->
+					</td>
+					<td colspan="2">Missing. Add &amp; Re-upload</td>
 				</tr>
 				<!-- /TMPL_IF -->
 			<!-- /TMPL_LOOP -->
@@ -71,10 +75,9 @@
 			<!-- TMPL_LOOP NAME=lnks -->
 			<tr<!-- TMPL_IF NAME=__odd__ --> class="even"<!-- /TMPL_IF -->>
 				<td>
-					<input type="checkbox" name="lnk" value="<!-- TMPL_VAR NAME=lnkid -->" <!-- TMPL_IF NAME=track -->checked="checked"<!-- /TMPL_IF --> />
-				</td>
+					<input type="checkbox" name="lnk" value="<!-- TMPL_VAR NAME=lnkid -->" <!-- TMPL_IF NAME=track -->checked="checked"<!-- /TMPL_IF --> /></td>
 				<td>
-					<a href="<!-- TMPL_VAR NAME=href -->" target="_blank"><!-- TMPL_VAR NAME=href --></a>
+					<a href="<!-- TMPL_VAR NAME=href -->" target="_blank"><!-- TMPL_VAR NAME=href --></a> <!-- TMPL_IF NAME=imap -->Map<!-- /TMPL_IF -->
 				</td>
 			</tr>
 			<!-- /TMPL_LOOP -->
