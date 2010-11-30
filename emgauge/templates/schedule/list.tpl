@@ -23,7 +23,7 @@
 					<h1><!-- TMPL_VAR NAME=SCHEDULENAME --></h1>
 					<h2>
 						Mailer: <strong><!-- TMPL_VAR NAME=SCHEDULEMAILERNAME --></strong>; 
-						Scheduled For: <strong><!-- TMPL_VAR NAME=SCHEDULEON --></strong>
+						Last Scheduled For: <strong><!-- TMPL_VAR NAME=SCHEDULEON --> (Repeated: <!-- TMPL_VAR NAME=SCHEDULEREPEATED -->)</strong><br />
 						(<a href="schedule.cgi?rm=save_step0&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Edit</a> | <a href="schedule.cgi?rm=delete_schedule&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Delete</a>)
 					</h2>
 					<p>

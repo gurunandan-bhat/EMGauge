@@ -40,18 +40,23 @@ sub list : StartRunmode {
 		per_page => $app->config_param('View.ItemsPerPage'),
 		page => $page,
 	);
+	
+	my @schedules = map{
 
-	my @schedules = map{{
-		SCHEDULEID => $_->id,
-		SCHEDULENAME => $_->name,
-		SCHEDULEMAILERID => $_->mailer->id,
-		SCHEDULEMAILERNAME => EMGaugeDB::Mailer->retrieve(id => $_->mailer)->name,
-		SCHEDULELISTS => (join ', ', map {$_->name . ' (' . $_->records . ')'} $_->lists),
-		SCHEDULEON => UnixDate($_->scheduledfor, '%a, %d %b \'%y %H:%M'),
-		SCHEDULEDELIVERED => EMGaugeDB::DeliveryLog->sql_count_delivered->select_val($_->id) || 0,
-		SCHEDULECOUNT => $_->scheduled,
-		SCHEDULESTATUS => $_->status,
-		SCHEDULEPAUSABLE => ($_->startedon ne '0000-00-00 00:00:00') && ($_->completedon eq '0000-00-00 00:00:00') && ($_->status ne 'Paused'),
+		my @mailerlog = EMGaugeDB::MailerLog->search(schedule => $_->id);
+		my ($schd, $dlvrd) = ($mailerlog[0]->scheduled, $mailerlog[0]->delivered);
+		{
+			SCHEDULEID => $_->id,
+			SCHEDULENAME => $_->name,
+			SCHEDULEMAILERID => $_->mailer->id,
+			SCHEDULEMAILERNAME => EMGaugeDB::Mailer->retrieve(id => $_->mailer)->name,
+			SCHEDULELISTS => (join ', ', map {$_->name . ' (' . $_->records . ')'} $_->lists),
+			SCHEDULEON => UnixDate($_->scheduledfor, '%a, %d %b \'%y %H:%M'),
+			SCHEDULEDELIVERED => $dlvrd,
+			SCHEDULECOUNT => $schd,
+			SCHEDULESTATUS => $_->status,
+			SCHEDULEPAUSABLE => ($_->startedon ne '0000-00-00 00:00:00') && ($_->completedon eq '0000-00-00 00:00:00') && ($_->status ne 'Paused'),
+			SCHEDULEREPEATED => $_->repeated,
 	}} $pager->search_where;
 
 	$tpl->param(
@@ -387,12 +392,6 @@ sub save_schedule : Runmode {
 		return $tpl->output;
 	}
 
-	my $scheduledfor = $valids->{scheduledate} . ' ' . $valids->{schedulehour} . ':' . $valids->{schedulemin};
-
-	my $schedule = $valids->{scheduleid} ? 
-		EMGaugeDB::Schedule->retrieve(id => $valids->{scheduleid}) :
-		EMGaugeDB::Schedule->insert({});
-		
 	my $clnt = Beanstalk::Client->new({
 		server => $app->config_param('JobManager.BeanstalkServer'),
 		default_tube => $app->config_param('JobManager.DefaultTube'),
@@ -414,14 +413,20 @@ sub save_schedule : Runmode {
 		compress   => 1,
 	);
 	
-	my $scheduletstmp = UnixDate("$scheduledfor", '%Y/%m/%d %H:%M:%S');
+	my $schedule = $valids->{scheduleid} ? 
+		EMGaugeDB::Schedule->retrieve(id => $valids->{scheduleid}) :
+		EMGaugeDB::Schedule->insert({});
 	my $scheduleid = $schedule->id;
+
 	my $jobh = {
 		type => 'Mail Delivery',
 		dbid => $scheduleid,
 		script => $app->config_param('Path.DeliverCommand') . " -s $scheduleid",
 		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
 	};
+
+	my $scheduledfor = $valids->{scheduledate} . ' ' . $valids->{schedulehour} . ':' . $valids->{schedulemin};
+	my $scheduletstmp = UnixDate("$scheduledfor", '%Y/%m/%d %H:%M:%S');
 
 	my $job = $clnt->put({
 		data => $srlzr->serialize($jobh),
@@ -430,14 +435,18 @@ sub save_schedule : Runmode {
 	});
 	die({type => 'error', msg => 'Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
 
+	my $scheduled = $schedule->scheduled || 0;
+	my $schtimes = $schedule->repeated || -1;
 	$schedule->set(
 		name => $valids->{schedulename},
 		mailer => $valids->{mailerid},
 		jobid => $job->id,
+		scheduled => $scheduled + EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id),
+		status => 'Scheduled',
 		scheduledfor => UnixDate($scheduledfor, '%Y/%m/%d %H:%M'),
 		scheduledby => $app->authen->username,
+		repeated => $schtimes + 1,
 	);
-	$schedule->update;
 
 	$schedule->schedulelists->delete_all;
 	foreach (@validlistids) {
@@ -447,21 +456,6 @@ sub save_schedule : Runmode {
 		});
 	}
 	$schedule->update;
-	
-	my $scheduled = EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id) || 0;
-	$schedule->scheduled($scheduled);
-	$schedule->status('Scheduled');
-	$schedule->update;
-	
-	my $mailerlog = EMGaugeDB::MailerLog->insert({
-		mailer => $valids->{mailerid},
-		schedule => $schedule->id,
-		scheduled => $scheduled,
-		delivered => 0,
-		bounced => 0,
-		opened => 0,
-		clicked => 0,
-	});
 	
 	$app->redirect('schedule.cgi');
 }

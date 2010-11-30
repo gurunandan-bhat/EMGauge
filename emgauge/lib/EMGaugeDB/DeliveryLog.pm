@@ -21,6 +21,6 @@ __PACKAGE__->columns(Others => qw{
 	postdeliveryreason
 });
 
-__PACKAGE__->set_sql(count_delivered => 'select count(*) from __TABLE__ where schedule = ?');
+__PACKAGE__->set_sql(count_delivered => 'select count(*) from __TABLE__ where schedule = ? and status = 1');
 
 1;

@@ -22,6 +22,7 @@ __PACKAGE__->columns(Others => qw{
 	status
 	scheduledby
 	scheduledon
+	repeated
 });
 
 __PACKAGE__->has_a(mailer => 'EMGaugeDB::Mailer');

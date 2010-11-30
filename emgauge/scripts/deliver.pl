@@ -23,7 +23,6 @@ use Digest::SHA qw{sha1_hex};
 use URI::Escape;
 use Text::Template;
 
-use Data::UUID;
 use MIME::Entity;
 use Email::Sender::Simple  qw{sendmail};
 use Email::Sender::Transport::SMTP::Persistent;
@@ -57,9 +56,11 @@ $SIG{USR1} = sub {
 	exit $jobid;
 };
 
-$schedule->pid($$);
-$schedule->startedon( POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime) );
-$schedule->status('Delivery In Progress');
+$schedule->set(
+	pid => $$,
+	startedon => POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime),
+	status => 'Delivery In Progress',
+);
 $schedule->update;
 
 my $mailer = EMGaugeDB::Mailer->retrieve(id => $schedule->mailer) ||
@@ -188,23 +189,14 @@ my $subttpl = Text::Template->new(
 	SOURCE => $mlrsubject,
 );
 
-my $count = 1;
+my $mailerlog = EMGaugeDB::MailerLog->find_or_create({
+	mailer => $mlrid,
+	schedule => $sid,
+});
+$mailerlog->scheduled($schedule->scheduled);
+$mailerlog->update;
 
-my @recipients;
-foreach(EMGaugeDB::Recipient->forschedule($sid)) {
-	push @recipients, {
-		id => $_->id,
-		email => $_->email,
-		unsubscribed => $_->unsubscribed,
-		firstname => $_->firstname,
-		lastname => $_->lastname,
-		fullname => $_->fullname,
-		custom1 => $_->custom1,
-		custom2 => $_->custom2,
-		custom3 => $_->custom3,
-		custom4 => $_->custom4,
-	};
-}
+my $count = $mailerlog->delivered || 0;
 
 my $transport = $cfg->param('Mail.TestTransport') ?
 	Email::Sender::Transport::Test->new() : 
@@ -215,48 +207,45 @@ my $transport = $cfg->param('Mail.TestTransport') ?
 		sasl_password => $cfg->param('Mail.AuthPass'),
 	});
 
-foreach(@recipients) {
+foreach(EMGaugeDB::Recipient->forschedule($sid)) {
 	
-	next if $_->{unsubscribed};
-	if (! $force) {
-		next if (my @sent = EMGaugeDB::DeliveryLog->search(recipient => $_->{id}, schedule => $sid));
-	}
+	next if $_->unsubscribed;
 
 	my $msg = MIME::Entity->build(
 		Type => 'multipart/related',
-		To => $_->{email},
+		To => $_->email,
 		From => "$mlrsender <$mlrsenderemail>",
 		'Reply-To' => $mlrreplyto,
 		Subject => $subttpl->fill_in(HASH => {
-			recipient => $_->{id},
-			email => $_->{email},
-			firstname => $_->{firstname},
-			lastname => $_->{lastname},
-			fullname => $_->{fullname},
-			custom1 => $_->{custom1},
-			custom2 => $_->{custom2},
-			custom3 => $_->{custom3},
-			custom4 => $_->{custom4},
+			recipient => $_->id,
+			email => $_->email,
+			firstname => $_->firstname,
+			lastname => $_->lastname,
+			fullname => $_->fullname,
+			custom1 => $_->custom1,
+			custom2 => $_->custom2,
+			custom3 => $_->custom3,
+			custom4 => $_->custom4,
 		}),
-		'X-Emgaugeid' => join('|', ($_->{id}, $sid, $mlrid)), 
+		'X-Emgaugeid' => join('|', ($_->id, $sid, $mlrid)), 
 	);
 
-	my $digest = sha1_hex($cfg->param('Mail.DigestSekrit') . $_->{email});
+	my $digest = sha1_hex($cfg->param('Mail.DigestSekrit') . $_->email);
 	
 	$msg->attach(
 		Type => 'text/html',
 		Data => $ttpl->fill_in(HASH => {
-			recipient => $_->{id},
-			unsubscribelink => $baseurl . '/user.cgi?rm=unsubscribe&rcpt=' . $_->{id} . '&digest=' . $digest,
+			recipient => $_->id,
+			unsubscribelink => $baseurl . '/user.cgi?rm=unsubscribe&id=' . $_->id . '&digest=' . $digest,
 			viewonlinelink => $mlrurl,
-			commentlink => $baseurl . '/user.cgi?rm=addcomment&email=' . URI::Escape::uri_escape($_->{email}) . '&mlrid=' . $mlrid . '&digest=' . $digest,
-			firstname => $_->{firstname},
-			lastname => $_->{lastname},
-			fullname => $_->{fullname},
-			custom1 => $_->{custom1},
-			custom2 => $_->{custom2},
-			custom3 => $_->{custom3},
-			custom4 => $_->{custom4},
+			commentlink => $baseurl . '/user.cgi?rm=comment&id=' . $_->id . '&mlr=' . $mlrid . '&digest=' . $digest,
+			firstname => $_->firstname,
+			lastname => $_->lastname,
+			fullname => $_->fullname,
+			custom1 => $_->custom1,
+			custom2 => $_->custom2,
+			custom3 => $_->custom3,
+			custom4 => $_->custom4,
 		}),
 		Encoding => 'quoted-printable',
 	);
@@ -276,30 +265,22 @@ foreach(@recipients) {
 		sendmail($msg, {transport => $transport});
 	};
 	if ($@) {
-		$status = 0;
-		$message = $@,
+		EMGaugeDB::DeliveryLog->insert({
+			schedule => $sid,
+			recipient => $_->id,
+			status => 0,
+			message => $@,
+		});
 	}
 	else {
-		$status = 1;
+		++$count;
+		$mailerlog->delivered($count);
+		$mailerlog->update;
 	}
-	
-	EMGaugeDB::DeliveryLog->insert({
-		schedule => $sid,
-		recipient => $_->{id},
-		status => $status,
-		message => $message,
-	});
-
-	print "$count: " . $_->{email} . "\n";
-	++$count;
 }
 
 die("No Log Entry found for Mailer: $mlrid")
 	unless (my @mailerlog = EMGaugeDB::MailerLog->search(mailer => $mlrid));
-
-my $mailerlog = $mailerlog[0];
-$mailerlog->delivered($mailerlog->delivered + $count);
-$mailerlog->update;
 
 $schedule->status('Completed');
 $schedule->completedon( POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime) );
