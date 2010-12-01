@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
 		<link rel="stylesheet" href="css/edmanage_validate.css" type="text/css" media="screen, projection" />
 		<link type="text/css" media="screen" rel="stylesheet" href="css/colorbox.css" />
-		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery.colorbox-min.js"></script>		 		
 		<script type="text/javascript" src="js/show_sample_data.js"></script>		 		
 		<script type="text/javascript" src="js/map_lists.js"></script>

@@ -77,17 +77,25 @@ sub forschedule{
 
 	my $self = shift;	
 	my $schdid = shift;
+	my $offset = shift;
+	
+	my $offsetstr = $offset ? "OFFSET $offset" : '';
 
-	my $query = qq{SELECT 
-					distinct recipient.id 
-				FROM 
-					recipient, 
-					listmembers, 
-					mailerlists 
-				WHERE
-					recipient.id = listmembers.recipient and
-					listmembers.list = mailerlists.list and
-					mailerlists.schedule = ?};
+	my $query = qq{
+		SELECT 
+			distinct recipient.id 
+		FROM 
+			recipient, 
+			listmembers, 
+			mailerlists 
+		WHERE
+			recipient.id = listmembers.recipient and
+			listmembers.list = mailerlists.list and
+			mailerlists.schedule = ?
+		ORDER BY
+			1
+		$offsetstr
+	};
 
 	my $dbh = $self->db_Main();
 	my $sth = $dbh->prepare_cached($query);

@@ -8,7 +8,7 @@
 		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
 		<link type="text/css" href="css/ui-lightness/jquery-ui-1.8rc3.custom.css" rel="stylesheet" />	
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/jquery-ui-1.8rc3.custom.min.js"></script>
  		<script type="text/javascript" src="js/jquery.validate.pack.js"></script>
 		<script type="text/javascript" src="js/scheduledate.js"></script>

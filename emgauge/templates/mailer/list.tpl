@@ -7,7 +7,7 @@
 		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
 		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
-		<script type="text/javascript" src="js/jquery-1.4.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
  		<script type="text/javascript" src="js/jquery.validate.pack.js"></script>
 		<script type="text/javascript" src="js/index_test_mail.js"></script>    
 		<title>Create Mailer</title>

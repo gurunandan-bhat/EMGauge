@@ -7,8 +7,8 @@
 		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
 		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script type="text/javascript" src="js/deliversignal.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/pause.js"></script>
 		<title>Schedules: Undelivered Batches</title>
     </head>
 	<body>
@@ -32,6 +32,24 @@
 						Status: <strong><!-- TMPL_VAR NAME=SCHEDULESTATUS --></strong> 
 						<!-- TMPL_IF NAME=SCHEDULEPAUSABLE -->| <a id="<!-- TMPL_VAR NAME=SCHEDULEID -->" href="#">Pause Delivery</a><!-- /TMPL_IF -->
 					</p>
+					<form name="pause<!-- TMPL_VAR NAME=SCHEDULEID -->" class="pause" method="post" action="#">
+						<fieldset>
+							<legend>Really Want to Pause?</legend>
+							<p>
+								You can <strong>Pause</strong> delivery to edit the Mailer. The new edited mailer will be sent 
+								out to the balance recipients when you <strong>Restart</strong>. You can also <strong>Pause</strong>
+								delivery and add recipients to the lists marked against this mailer. Restarting after the pause will 
+								deliver the mailer to the balance recipients <strong>plus<strong> the new addresses you have just added.<br />
+								You <strong>cannot</strong> add a whole new list to this schedule. If you want to deliver this mailer to
+								a different set of lists, you are better off <strong>making a separate schedule for that list</strong>
+							</p>
+							<p>
+								<input type="submit" name="pause" value="Pause" /> 
+								<input type="submit" name="stop" value="Abort" /> 
+								<input type="submit" name="cancel" value="Cantinue" />  
+								<input type="hidden" name="schedule" value="<!-- TMPL_VAR NAME=SCHEDULEID -->" />
+						</fieldset>
+					</form>
 				</div>
 				<hr />
 				<!-- /TMPL_LOOP -->

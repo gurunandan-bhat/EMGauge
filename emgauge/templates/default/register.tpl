@@ -7,8 +7,8 @@
 		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
 		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
 		<link rel="stylesheet" href="css/app.css" type="text/css" media="screen" />  
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
-		<script src="js/checkavailability.js"></script>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/checkavailability.js"></script>
 		<title>Register</title>
     </head>
 	<body>
