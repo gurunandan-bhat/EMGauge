@@ -283,7 +283,7 @@ CREATE TABLE `mailerlists` (
   PRIMARY KEY (`id`),
   KEY `mailerlists_schedule_idx` (`schedule`),
   KEY `mailerlists_list_idx` (`list`)
-) ENGINE=MyISAM AUTO_INCREMENT=1423 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1447 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -298,6 +298,7 @@ CREATE TABLE `mailerlog` (
   `mailer` int(11) DEFAULT NULL,
   `schedule` int(11) DEFAULT NULL,
   `scheduled` int(11) DEFAULT NULL,
+  `offset` int(11) DEFAULT NULL,
   `delivered` int(11) DEFAULT NULL,
   `bounced` int(11) DEFAULT NULL,
   `opened` int(11) DEFAULT NULL,
@@ -395,10 +396,11 @@ CREATE TABLE `schedule` (
   `jobid` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL,
   `scheduled` int(11) DEFAULT NULL,
+  `sess_scheduled` int(11) DEFAULT NULL,
   `scheduledfor` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `startedon` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `completedon` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `status` varchar(128) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
   `scheduledby` varchar(16) DEFAULT NULL,
   `scheduledon` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `repeated` int(11) DEFAULT NULL,
@@ -468,7 +470,7 @@ CREATE TABLE `tracker` (
   `obj` int(11) DEFAULT NULL,
   `reqtstamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1470078 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1470079 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -542,4 +544,4 @@ CREATE TABLE `xlparsequeue` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-11-30 23:28:33
+-- Dump completed on 2010-12-03  1:37:13
