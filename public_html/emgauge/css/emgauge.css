@@ -215,3 +215,9 @@ form legend.waiting {
 label {
 	color: #818536;
 }
+
+input.button {
+	font-size: 1em;
+	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
+	color: #404040;
+}	

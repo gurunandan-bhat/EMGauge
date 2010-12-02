@@ -87,9 +87,9 @@ while (1) {
 	my $script = $data->{script} . " -j $jobid";
 
 	$pmgr->start("$type|$dbid|$jobid") and next;
-	exec($script);
 
-	$pmgr->finish($job->id);
+	exec($script);
+	die "Cannot execute script $script\n";
 }
 
 exit;

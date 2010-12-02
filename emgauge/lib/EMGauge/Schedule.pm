@@ -45,17 +45,22 @@ sub list : StartRunmode {
 
 		my @mailerlog = EMGaugeDB::MailerLog->search(schedule => $_->id);
 		my ($schd, $dlvrd) = ($mailerlog[0]->scheduled, $mailerlog[0]->delivered);
+
+		my $mlr = EMGaugeDB::Mailer->retrieve(id => $_->mailer);
+		
 		{
 			SCHEDULEID => $_->id,
 			SCHEDULENAME => $_->name,
-			SCHEDULEMAILERID => $_->mailer->id,
-			SCHEDULEMAILERNAME => EMGaugeDB::Mailer->retrieve(id => $_->mailer)->name,
+			SCHEDULEMAILERID => $mlr->id,
+			SCHEDULEMAILERNAME => $mlr->name,
+			SCHEDULEMAILERSUBJECT => $mlr->subject,
 			SCHEDULELISTS => (join ', ', map {$_->name . ' (' . $_->records . ')'} $_->lists),
 			SCHEDULEON => UnixDate($_->scheduledfor, '%a, %d %b \'%y %H:%M'),
 			SCHEDULEDELIVERED => $dlvrd,
 			SCHEDULECOUNT => $schd,
-			SCHEDULESTATUS => $_->status,
-			SCHEDULEPAUSABLE => ($_->startedon ne '0000-00-00 00:00:00') && ($_->completedon eq '0000-00-00 00:00:00') && ($_->status ne 'Paused'),
+			SCHEDULESTATUS => status2str($_->status),
+			SCHEDULEPAUSABLE => ($_->status == 1),
+			SCHEDULEPAUSED => ($_->status == 2),
 			SCHEDULEREPEATED => $_->repeated,
 	}} $pager->search_where;
 
@@ -442,7 +447,7 @@ sub save_schedule : Runmode {
 		mailer => $valids->{mailerid},
 		jobid => $job->id,
 		scheduled => $scheduled + EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id),
-		status => 'Scheduled',
+		status => -1,
 		scheduledfor => UnixDate($scheduledfor, '%Y/%m/%d %H:%M'),
 		scheduledby => $app->authen->username,
 		repeated => $schtimes + 1,
@@ -474,15 +479,53 @@ sub delete_schedule : Runmode {
 sub pause_schedule : Runmode {
 	
 	my $app = shift;
-	my $scheduleid = $app->query->param('scheduleid');
+	my $sid = $app->query->param('sid');
 	
-	my $schedule = EMGaugeDB::Schedule->retrieve(id => $scheduleid) ||
-		die({type => 'error', msg => 'No Schedule Found to Pause'});
+	my $schedule = EMGaugeDB::Schedule->retrieve(id => $sid) ||
+		die({type => 'error', msg => 'No Schedule Found to Pause' . $sid});
+		
+	my $clnt = Beanstalk::Client->new({
+		server => $app->config_param('JobManager.BeanstalkServer'),
+		default_tube => $app->config_param('JobManager.DefaultTube'),
+		debug => 1,
+	});
 
-	my $pid = $schedule->pid;
-	my $retval = kill USR1 =>  $pid;
+	$clnt->connect;
+	return '<p class="error">Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong>. Please contact guru@dygnos.com with this error message</p>'
+		if $clnt->error;
+
+	$clnt->use($app->config_param('JobManager.DefaultTube'));
 	
-	$app->redirect('schedule.cgi');
+	my $srlzr = Data::Serializer->new(
+		serializer => 'Storable',
+		digester   => 'MD5',
+		cipher     => 'DES',
+		secret     => $app->config_param('Mail.DigestSekrit'),
+		compress   => 1,
+	);
+	
+	my $jobh = {
+		type => 'Pause Delivery',
+		dbid => 0,
+		script => $app->config_param('Path.PauseCommand') . " -s $sid",
+		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
+	};
+
+	my $job = $clnt->put({
+		data => $srlzr->serialize($jobh),
+		ttr => 60,
+	});
+	return '<p class="error">Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message</p>'
+		if $clnt->error;
+		
+	sleep 5;
+	
+	if (EMGaugeDB::Schedule->retrieve(id => $sid)->status == 2) {
+		return '<p class="success">Delivery successfully Paused. You can restart when ready</p>';
+	}
+	else {
+		return '<p class="error">Could not find delivery process to pause. Please contact guru@dygnos.com with this error message</p>';
+	}
 }
 
 sub _getsecondsto {
@@ -496,5 +539,15 @@ sub _getsecondsto {
 	return 60 * (60 * (24 * $Dd + $Dh ) + $Dm) + $Ds;	
 }
 
+sub status2str {
+	
+	my $status = shift;
 
+	return "Scheduled" if ($status == -1);
+	return "Completed" if ($status == 0);
+	return "In Progress" if ($status == 1);
+	return "Stopped" if ($status == 2);
+	
+	return;	
+}
 1;

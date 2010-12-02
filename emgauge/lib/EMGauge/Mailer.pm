@@ -81,6 +81,7 @@ sub index : StartRunmode {
 		push @mailers, {
 			MAILERID => $id,
 			MAILERNAME => $mlr->name,
+			MAILERSUBJECT => $mlr->subject,
 			MAILERLANDINGPAGELINK => $mlr->landingpage || 'mailer.cgi?rm=create_landingpage&mailer=' . $id,
 			MAILERLINK => $mlr->onlineurl . "?tstmp=$nocache",
 			MAILERCAMPAIGN => EMGaugeDB::Campaign->retrieve(id => $mlr->campaign)->name,

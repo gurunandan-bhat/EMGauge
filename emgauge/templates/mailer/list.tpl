@@ -22,7 +22,10 @@
 				<!-- TMPL_LOOP NAME=MAILERS -->
 				<div class="listentry<!-- TMPL_IF NAME=__odd__ --> odd<!-- /TMPL_IF -->">
 					<h1><!-- TMPL_VAR NAME=MAILERNAME --></h1>
-					<h2>Campaign: <!-- TMPL_VAR NAME=MAILERCAMPAIGN -->; Created: <!-- TMPL_VAR NAME=MAILERCREATEDON --></h2>
+					<h2>
+						Subject: <!-- TMPL_VAR NAME=MAILERSUBJECT --><br />
+						Campaign: <!-- TMPL_VAR NAME=MAILERCAMPAIGN -->; Created: <!-- TMPL_VAR NAME=MAILERCREATEDON --><br />
+					</h2>
 					<!-- TMPL_IF NAME=MAILERSCHEDULES -->
 					<h3>Scheduled For</h3>
 					<ol>

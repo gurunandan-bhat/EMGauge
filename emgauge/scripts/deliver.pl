@@ -50,18 +50,14 @@ $SIG{USR1} = sub {
 	my $sigid = shift;
 	local $SIG{$sigid} = 'IGNORE';
 
-	$schedule->status('Paused');
+	$schedule->set(
+		status => 2,
+		completedon => POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime),
+	);
 	$schedule->update;
 	
 	exit $jobid;
 };
-
-$schedule->set(
-	pid => $$,
-	startedon => POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime),
-	status => 'Delivery In Progress',
-);
-$schedule->update;
 
 my $mailer = EMGaugeDB::Mailer->retrieve(id => $schedule->mailer) ||
 	die("Cannot Find Mailer for Schedule $sid");
@@ -207,6 +203,13 @@ my $transport = $cfg->param('Mail.TestTransport') ?
 		sasl_password => $cfg->param('Mail.AuthPass'),
 	});
 
+$schedule->set(
+	pid => $$,
+	startedon => POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime),
+	status => 1,
+);
+$schedule->update;
+
 foreach(EMGaugeDB::Recipient->forschedule($sid)) {
 	
 	next if $_->unsubscribed;
@@ -277,12 +280,13 @@ foreach(EMGaugeDB::Recipient->forschedule($sid)) {
 		$mailerlog->delivered($count);
 		$mailerlog->update;
 	}
+	sleep 30;
 }
 
 die("No Log Entry found for Mailer: $mlrid")
 	unless (my @mailerlog = EMGaugeDB::MailerLog->search(mailer => $mlrid));
 
-$schedule->status('Completed');
+$schedule->status(0);
 $schedule->completedon( POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime) );
 $schedule->update;
 

@@ -22,34 +22,41 @@
 				<div class="listentry<!-- TMPL_IF NAME=__odd__ --> odd<!-- /TMPL_IF -->">
 					<h1><!-- TMPL_VAR NAME=SCHEDULENAME --></h1>
 					<h2>
-						Mailer: <strong><!-- TMPL_VAR NAME=SCHEDULEMAILERNAME --></strong>; 
+						Mailer: <strong><!-- TMPL_VAR NAME=SCHEDULEMAILERNAME --></strong><br />
+						Subject: <strong><!-- TMPL_VAR NAME=SCHEDULEMAILERSUBJECT --></strong><br /> 
 						Last Scheduled For: <strong><!-- TMPL_VAR NAME=SCHEDULEON --> (Repeated: <!-- TMPL_VAR NAME=SCHEDULEREPEATED -->)</strong><br />
-						(<a href="schedule.cgi?rm=save_step0&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Edit</a> | <a href="schedule.cgi?rm=delete_schedule&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Delete</a>)
 					</h2>
 					<p>
 						Deliver To: <strong><!-- TMPL_VAR NAME=SCHEDULELISTS --></strong><br />
 						Delivered: <strong><!-- TMPL_VAR NAME=SCHEDULEDELIVERED --> of <!-- TMPL_VAR NAME=SCHEDULECOUNT --></strong><br />
-						Status: <strong><!-- TMPL_VAR NAME=SCHEDULESTATUS --></strong> 
-						<!-- TMPL_IF NAME=SCHEDULEPAUSABLE -->| <a id="<!-- TMPL_VAR NAME=SCHEDULEID -->" href="#">Pause Delivery</a><!-- /TMPL_IF -->
+						Status: <strong><!-- TMPL_VAR NAME=SCHEDULESTATUS --></strong><br /> 
+						<a href="schedule.cgi?rm=save_step0&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Edit</a> |
+						<a href="schedule.cgi?rm=delete_schedule&scheduleid=<!-- TMPL_VAR NAME=SCHEDULEID -->">Delete</a>
+						<!-- TMPL_IF NAME=SCHEDULEPAUSABLE -->| <a class="pauselink" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" href="#">Pause</a><!-- /TMPL_IF -->
+						<!-- TMPL_IF NAME=SCHEDULEPAUSED -->| <a class="restartlink" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" href="#">Restart</a><!-- /TMPL_IF -->
 					</p>
+					<!-- TMPL_IF NAME=SCHEDULEPAUSABLE -->
 					<form name="pause<!-- TMPL_VAR NAME=SCHEDULEID -->" class="pause" method="post" action="#">
 						<fieldset>
-							<legend>Really Want to Pause?</legend>
+							<legend>Do you really want to stop?</legend>
 							<p>
-								You can <strong>Pause</strong> delivery to edit the Mailer. The new edited mailer will be sent 
-								out to the balance recipients when you <strong>Restart</strong>. You can also <strong>Pause</strong>
-								delivery and add recipients to the lists marked against this mailer. Restarting after the pause will 
-								deliver the mailer to the balance recipients <strong>plus<strong> the new addresses you have just added.<br />
-								You <strong>cannot</strong> add a whole new list to this schedule. If you want to deliver this mailer to
-								a different set of lists, you are better off <strong>making a separate schedule for that list</strong>
+								You can pause delivery, fix errors and restart delivery when done. 
+								Restarting will only mail the balance recipients and no recipient will 
+								be mailed twice <strong style="color: red;">if the recipient lists are
+								not changed</strong>. If you want to deliver this mailer to a different 
+								or modified list, <strong style="color: red;">make a new schedule</strong>.
 							</p>
 							<p>
-								<input type="submit" name="pause" value="Pause" /> 
-								<input type="submit" name="stop" value="Abort" /> 
-								<input type="submit" name="cancel" value="Cantinue" />  
-								<input type="hidden" name="schedule" value="<!-- TMPL_VAR NAME=SCHEDULEID -->" />
+								What do you want to do?<br />
+								<div style="text-align: center">
+									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="pause" class="button" value="Pause Delivery" /> 
+									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="cancel" class="button" value="Continue Delivery" />  
+									<input type="hidden" name="schedule" value="<!-- TMPL_VAR NAME=SCHEDULEID -->" />
+								</div>
+							</p>
 						</fieldset>
 					</form>
+					<!-- /TMPL_IF -->
 				</div>
 				<hr />
 				<!-- /TMPL_LOOP -->

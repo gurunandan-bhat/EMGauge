@@ -184,7 +184,7 @@ sub errhndlr : ErrorRunmode {
 	my $tpl = $app->load_tmpl('error/index.tpl');
 
 	if (ref($err) eq 'HASH') {
-		$tpl = $app->load_tmpl('async_error.tpl') if exists $err->{async};  
+		$tpl = $app->load_tmpl('error/async_error.tpl') if exists $err->{async};  
 		$tpl->param(CLASS => $err->{type});
 		$tpl->param(MSG => $err->{msg});
 	}
