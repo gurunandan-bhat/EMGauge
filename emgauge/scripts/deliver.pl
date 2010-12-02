@@ -192,8 +192,6 @@ my $mailerlog = EMGaugeDB::MailerLog->find_or_create({
 $mailerlog->scheduled($schedule->scheduled);
 $mailerlog->update;
 
-my $count = $mailerlog->delivered || 0;
-
 my $transport = $cfg->param('Mail.TestTransport') ?
 	Email::Sender::Transport::Test->new() : 
 	Email::Sender::Transport::SMTP::Persistent->new({
@@ -210,8 +208,12 @@ $schedule->set(
 );
 $schedule->update;
 
-foreach(EMGaugeDB::Recipient->forschedule($sid)) {
+my $count = $mailerlog->delivered + 0;
+my $offset = $mailerlog->offset + 0;
+foreach(EMGaugeDB::Recipient->forschedule($sid, $offset)) {
 	
+	++$offset;
+
 	next if $_->unsubscribed;
 
 	my $msg = MIME::Entity->build(
@@ -277,14 +279,19 @@ foreach(EMGaugeDB::Recipient->forschedule($sid)) {
 	}
 	else {
 		++$count;
-		$mailerlog->delivered($count);
-		$mailerlog->update;
 	}
+
+	$mailerlog->set(
+		delivered => $count,
+		offset => $offset,
+	);
+	$mailerlog->update;
+
 	sleep 30;
 }
 
-die("No Log Entry found for Mailer: $mlrid")
-	unless (my @mailerlog = EMGaugeDB::MailerLog->search(mailer => $mlrid));
+$mailerlog->offset(0);
+$mailerlog->update;
 
 $schedule->status(0);
 $schedule->completedon( POSIX::strftime("%Y/%m/%d %H:%M:%S", localtime) );

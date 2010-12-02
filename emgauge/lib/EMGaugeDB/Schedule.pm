@@ -16,6 +16,7 @@ __PACKAGE__->columns(Others => qw{
 	jobid
 	pid
 	scheduled
+	sess_scheduled
 	scheduledfor
 	startedon
 	completedon

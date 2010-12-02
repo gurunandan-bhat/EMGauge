@@ -47,11 +47,31 @@
 								or modified list, <strong style="color: red;">make a new schedule</strong>.
 							</p>
 							<p>
-								What do you want to do?<br />
+								What do you want to do?
 								<div style="text-align: center">
+									<span style="display: none;"><br /></span>
 									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="pause" class="button" value="Pause Delivery" /> 
 									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="cancel" class="button" value="Continue Delivery" />  
-									<input type="hidden" name="schedule" value="<!-- TMPL_VAR NAME=SCHEDULEID -->" />
+								</div>
+							</p>
+						</fieldset>
+					</form>
+					<!-- /TMPL_IF -->
+					<!-- TMPL_IF NAME=SCHEDULEPAUSED -->
+					<form name="restart<!-- TMPL_VAR NAME=SCHEDULEID -->" class="restart" method="post" action="#">
+						<fieldset>
+							<legend>Do you really want to restart?</legend>
+							<p>
+								Restarting this batch will work cleanly only without duplicates only if 
+								the lists have not changed since delivery was paused. If you want to deliver 
+								this mailer to a different or modified list, 
+								<strong style="color: red;">make a new schedule</strong>.
+							</p>
+							<p>
+								What do you want to do?<br />
+								<div style="text-align: center">
+									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="restart" class="button" value="Restart Delivery" /> 
+									<input type="submit" schedule="<!-- TMPL_VAR NAME=SCHEDULEID -->" name="cancel" class="button" value="Continue Pausing" />  
 								</div>
 							</p>
 						</fieldset>

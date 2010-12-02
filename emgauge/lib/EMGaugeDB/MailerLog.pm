@@ -14,6 +14,7 @@ __PACKAGE__->columns(Others => qw{
 	mailer
 	schedule
 	scheduled
+	offset
 	delivered
 	bounced
 	opened

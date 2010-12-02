@@ -440,17 +440,18 @@ sub save_schedule : Runmode {
 	});
 	die({type => 'error', msg => 'Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
 
+	my $sess_scheduled = EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id);
 	my $scheduled = $schedule->scheduled || 0;
-	my $schtimes = $schedule->repeated || -1;
 	$schedule->set(
 		name => $valids->{schedulename},
 		mailer => $valids->{mailerid},
 		jobid => $job->id,
-		scheduled => $scheduled + EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id),
+		scheduled => $scheduled + $sess_scheduled,
+		sess_scheduled => $sess_scheduled,
 		status => -1,
 		scheduledfor => UnixDate($scheduledfor, '%Y/%m/%d %H:%M'),
 		scheduledby => $app->authen->username,
-		repeated => $schtimes + 1,
+		repeated => $schedule->repeated + 1,
 	);
 
 	$schedule->schedulelists->delete_all;
@@ -521,10 +522,70 @@ sub pause_schedule : Runmode {
 	sleep 5;
 	
 	if (EMGaugeDB::Schedule->retrieve(id => $sid)->status == 2) {
-		return '<p class="success">Delivery successfully Paused. You can restart when ready</p>';
+		return '<p class="success">Delivery successfully Paused. You can restart when ready. Reload this page to view updated status</p>';
 	}
 	else {
 		return '<p class="error">Could not find delivery process to pause. Please contact guru@dygnos.com with this error message</p>';
+	}
+}
+
+sub restart_schedule : Runmode {
+	
+	my $app = shift;
+	my $q = $app->query;
+	my $scheduleid = $q->param('sid');
+
+	my $clnt = Beanstalk::Client->new({
+		server => $app->config_param('JobManager.BeanstalkServer'),
+		default_tube => $app->config_param('JobManager.DefaultTube'),
+		debug => 0,
+	});
+
+	$clnt->connect;
+	die({
+		type => 'error', 
+		msg => 'Connect to Beanstalk Server threw error: <strong>' . $clnt->error . '</strong>. Please contact guru@dygnos.com with this error message'
+	}) if $clnt->error;
+	$clnt->use($app->config_param('JobManager.DefaultTube'));
+	
+	my $srlzr = Data::Serializer->new(
+		serializer => 'Storable',
+		digester   => 'MD5',
+		cipher     => 'DES',
+		secret     => $app->config_param('Mail.DigestSekrit'),
+		compress   => 1,
+	);
+	
+	my $schedule = EMGaugeDB::Schedule->retrieve(id => $scheduleid);
+
+	my $scheduletstmp = strftime('%Y/%m/%d %H:%M:%S', localtime);
+	my $jobh = {
+		type => 'Mail Delivery',
+		dbid => $scheduleid,
+		script => $app->config_param('Path.DeliverCommand') . " -s $scheduleid",
+		insertedon => $scheduletstmp,
+	};
+
+	my $job = $clnt->put({
+		data => $srlzr->serialize($jobh),
+		ttr => 60,
+	});
+	die({type => 'error', msg => 'Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
+
+	$schedule->set(
+		jobid => $job->id,
+		status => -1,
+		scheduledfor => $scheduletstmp,
+	);
+	$schedule->update;
+
+	sleep 5;
+		
+	if (EMGaugeDB::Schedule->retrieve(id => $scheduleid)->status == 1) {
+		return '<p class="success">Delivery successfully Restarted. Reload this page to view updated status</p>';
+	}
+	else {
+		return '<p class="error">Could not restart delivery. Please contact guru@dygnos.com with this error message</p>';
 	}
 }
 

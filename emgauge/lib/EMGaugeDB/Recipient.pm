@@ -79,7 +79,7 @@ sub forschedule{
 	my $schdid = shift;
 	my $offset = shift;
 	
-	my $offsetstr = $offset ? "OFFSET $offset" : '';
+	my $offsetstr = $offset ? "LIMIT 18446744073709551615 OFFSET $offset" : '';
 
 	my $query = qq{
 		SELECT 

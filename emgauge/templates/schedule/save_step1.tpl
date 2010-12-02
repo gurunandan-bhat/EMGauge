@@ -46,16 +46,22 @@
 							<h1 class="sectionhead" style="margin-bottom: 0.3em; text-align: center;">(Un)Check to (Un)Assign <!-- TMPL_VAR NAME=err_assignlists --></h1>
 							<div style="height: 240px; overflow-y: auto; overflow-x: hidden; margin-bottom: 25px;">
 							<table>
+								<!-- TMPL_IF NAME=ASSIGNEDLISTS -->
+								<tr><th>Assigned Lists</th></tr>
 								<!-- TMPL_LOOP NAME=ASSIGNEDLISTS -->
 								<tr<!-- TMPL_IF NAME=__odd__ --> class="odd"<!-- /TMPL_IF>>
 									<td><label for="available_<!-- TMPL_VAR NAME=LISTID -->"><input type="checkbox" id="available_<!-- TMPL_VAR NAME=LISTID -->" name="assignlists" value="<!-- TMPL_VAR NAME=LISTID -->" listname="<!-- TMPL_VAR NAME=LISTNAME -->" checked="checked" /> <!-- TMPL_VAR NAME=LISTNAME --></label></td>
 								</tr>
 								<!-- /TMPL_LOOP -->
+								<!-- /TMPL_IF -->
+								<!-- TMPL_IF NAME=ASSIGNEDLISTS -->
+								<tr><th>Unassigned Lists</th></tr>
 								<!-- TMPL_LOOP NAME=UNASSIGNEDLISTS -->
 								<tr<!-- TMPL_IF NAME=__odd__ --> class="odd"<!-- /TMPL_IF>>
 									<td><label for="available_<!-- TMPL_VAR NAME=LISTID -->"><input type="checkbox" id="available_<!-- TMPL_VAR NAME=LISTID -->" name="assignlists" value="<!-- TMPL_VAR NAME=LISTID -->" listname="<!-- TMPL_VAR NAME=LISTNAME -->" /> <!-- TMPL_VAR NAME=LISTNAME --></label></td>
 								</tr>
 								<!-- /TMPL_LOOP -->
+								<!-- /TMPL_IF -->
 							</table>
 							</div>
 						</div>

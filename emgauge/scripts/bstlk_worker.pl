@@ -11,15 +11,34 @@ use Parallel::ForkManager;
 use Data::Dumper;
 use Config::Simple;
 use DBI;
-
-# use Proc::Daemon;
-# Proc::Daemon::Init();
+use Proc::Daemon;
 
 use lib qw{/home/nandan/workspace/EMGauge/emgauge/lib};
 use EMGauge::Constants;
 
-my $cfg = new Config::Simple($EMGauge::Constants::confdir . 'EMGauge.conf');
+my $confdir = $EMGauge::Constants::confdir;
+my $pidfile = $confdir . 'bstlk_worker.pid';
 
+if ( open my $pidfh, '<', $pidfile ) {
+	
+	my $pid = <$pidfh>;
+	if (kill 0, $pid) {
+		print "PID file exists and Process is alive. I am outta here\n";
+		exit;
+	}
+	else {
+		print "All Clear! Becoming a Daemon\n";
+	}
+}
+
+my $daemon = Proc::Daemon->new(
+	work_dir =>  $confdir,
+	pid_file => $pidfile,
+);
+
+$daemon->Init();
+
+my $cfg = new Config::Simple($confdir . 'EMGauge.conf');
 Log::Log4perl::easy_init({
 	level => $DEBUG,
 	file => '>> ' . $cfg->param('Path.BeanstalkLog'),
