@@ -60,6 +60,8 @@ CREATE TABLE `bounces` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `email` varchar(128) DEFAULT NULL,
   `recipient` varchar(128) DEFAULT NULL,
+  `mailer` int(11) DEFAULT NULL,
+  `schedule` int(11) DEFAULT NULL,
   `status` varchar(32) DEFAULT NULL,
   `reason` text,
   `bdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -545,4 +547,4 @@ CREATE TABLE `xlparsequeue` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-03 11:25:07
+-- Dump completed on 2010-12-03 12:45:34
