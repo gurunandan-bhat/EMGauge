@@ -345,6 +345,7 @@ sub sendimg : Runmode {
 	my $mlr = $q->param('mailerid');
 	my $img = $q->param('imgid');
 	my $rcpt = $q->param('rcpt');
+	my $uagent = $q->user_agent();
 	
 	my $valid = ($sch and $mlr and $img and $rcpt);
 	
@@ -363,6 +364,7 @@ sub sendimg : Runmode {
 		schedule => $sch,
 		objtype => 'image',
 		obj => $img,
+		uagent => $uagent,
 	});
 
 	use CGI::Application::Plugin::Stream qw/stream_file/;
@@ -382,6 +384,7 @@ sub tracklink : Runmode {
 	my $mlr = $q->param('mailerid');
 	my $lnk = $q->param('linkid');
 	my $rcpt = $q->param('rcpt');
+	my $uagent = $q->user_agent();
 	
 	my $valid = ($sch and $mlr and $lnk and $rcpt);
 
@@ -400,6 +403,7 @@ sub tracklink : Runmode {
 		schedule => $sch,
 		objtype => 'link',
 		obj => $lnk,
+		uagent => $uagent,
 	});
 	
 	$app->redirect($link->href);
