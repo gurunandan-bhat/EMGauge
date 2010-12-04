@@ -9,7 +9,9 @@ use EMGauge::User;
 use EMGauge::Constants;
 
 my $app = EMGauge::User->new(
-	cfg_file => $EMGauge::Constants::confdir . 'EMGauge.conf',
+	PARAMS => {
+		cfgfile => $EMGauge::Constants::confdir . 'EMGauge.conf',
+	},
 );
 
 $app->run;

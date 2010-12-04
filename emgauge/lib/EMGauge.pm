@@ -14,12 +14,13 @@ use CGI::Application::Plugin::AutoRunmode;
 
 use POSIX qw{strftime};
 
+use Data::Dumper;
+
 sub cgiapp_init {
 	
-	my ($app, %params) = @_;
-
-	$app->config_file($params{cfg_file});
-
+	my $app = shift;
+	
+	$app->config_file($app->param('cfgfile'));
 	$app->html_tmpl_class('HTML::Template');
 	$app->tmpl_path( $app->config_param('Path.Templates') );
 	
@@ -167,15 +168,15 @@ sub lastlogin {
 	return;
 }
 
-sub cgiapp_get_query {
-
-	use CGI::Simple qw{-default};
-
-	$CGI::Simple::DISABLE_UPLOADS = 0;
-	$CGI::Simple::POST_MAX = 12048000;
-
-	return CGI::Simple->new()
-}
+#sub cgiapp_get_query {
+#
+#	use CGI::Simple;
+#
+#	$CGI::Simple::DISABLE_UPLOADS = 0;
+#	$CGI::Simple::POST_MAX = 12048000;
+#
+#	return CGI::Simple->new()
+#}
    
 sub errhndlr : ErrorRunmode {
 	my $app = shift;
