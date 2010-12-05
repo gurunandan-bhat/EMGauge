@@ -1362,7 +1362,9 @@ sub save_meta_edited_mailer : Runmode {
 		
 		return $tpl->output;
 	}
-	
+
+# TODO Write generic update mailer function from $valids
+
 	$mailer->set(
 		name => $valids->{name},
 		subject => $valids->{subject},
@@ -1395,5 +1397,106 @@ sub save_meta_edited_mailer : Runmode {
 	return "<strong>Mailer Saved</strong>";
 }
 
+sub performance : Runmode {
+	
+	my $app = shift;
+	my $mlrid = $app->query->param('mlrid');
+	
+	my $mailer = EMGaugeDB::Mailer->retrieve(id => $mlrid)
+		or die({type => 'error', msg => 'No Mailer Found', async => 1});
 
+	my $qry = "select
+				mailerlog.schedule,
+				date_format(schedule.startedon, '%e %b %y %H:%i'),
+				mailerlog.scheduled,
+				mailerlog.delivered
+			from
+				schedule,
+				mailerlog
+			where
+				schedule.id = mailerlog.schedule and
+				mailerlog.mailer = ?
+			order by
+				1";
+	my $logdh = $app->dbh->prepare($qry);
+	$logdh->execute($mlrid);
+	
+	my $logs;
+	while(my $row = $logdh->fetchrow_arrayref) {
+		$logs->{$row->[0]} = {
+			schdt => $row->[1],
+			schdd => $row->[2],
+			schdv => $row->[3],
+		};
+	}
+	
+	$qry = "select
+				schedule,
+				count(distinct recipient)
+			from
+				bounces
+			where
+				mailer = ?
+			group by
+				schedule";
+
+	my $bncdh = $app->dbh->prepare($qry);
+	$bncdh->execute($mlrid);
+	
+	while (my $row = $bncdh->fetchrow_arrayref) {
+		$logs->{$row->[0]}->{schbc} = $row->[1];
+	}
+	
+	$qry = "select
+				schedule,
+				objtype,
+				count(distinct recipient)
+			from
+				tracker
+			where
+				mailer = ?
+			group by
+				schedule,
+				objtype";
+
+	my $trkdh = $app->dbh->prepare($qry);
+	$trkdh->execute($mlrid);
+
+	while (my $row = $trkdh->fetchrow_arrayref) {
+		$logs->{$row->[0]}->{$row->[1]} = $row->[2];
+	}
+	
+	my @log;
+	my ($totig, $totbc, $totop, $totck);
+	foreach (sort keys %$logs) {
+
+		$totig += $logs->{$_}{schdv} - $logs->{$_}{schbc} - $logs->{$_}{image};
+		$totbc += $logs->{$_}{schbc};
+		$totop += $logs->{$_}{image};
+		$totck += $logs->{$_}{'link'};
+
+		push @log, {
+			schdt => $logs->{$_}{schdt},
+			schdd => $logs->{$_}{schdd} || 0,
+			schdv => $logs->{$_}{schdv} || 0,
+			schbc => $logs->{$_}{schbc} || 0,
+			schop => $logs->{$_}{image} || 0,
+			schck => $logs->{$_}{'link'} || 0,
+			schig => $logs->{$_}{schdv} - $logs->{$_}{schbc} - $logs->{$_}{image},
+		};
+	}
+	
+	my $tpl = $app->load_tmpl('mailer/perf.tpl', die_on_bad_params => 0);
+	$tpl->param(
+		MAILERID => $mlrid,
+		MAILERNAME => $mailer->name,
+		MAILERSTATS => \@log,
+		MAILERIG => $totig,
+		MAILERBC => $totbc,
+		MAILEROP => $totop,
+		MAILERCK => $totck,
+	);
+
+	return $tpl->output;
+}
 1;

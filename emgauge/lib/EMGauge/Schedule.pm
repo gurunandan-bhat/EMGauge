@@ -44,7 +44,10 @@ sub list : StartRunmode {
 	my @schedules = map{
 
 		my @mailerlog = EMGaugeDB::MailerLog->search(schedule => $_->id);
-		my ($schd, $dlvrd) = ($mailerlog[0]->scheduled, $mailerlog[0]->delivered);
+		my $dlvrd = 0;
+		if (@mailerlog) {
+			$dlvrd = $mailerlog[0]->delivered;
+		}
 
 		my $mlr = EMGaugeDB::Mailer->retrieve(id => $_->mailer);
 		
@@ -57,7 +60,7 @@ sub list : StartRunmode {
 			SCHEDULELISTS => (join ', ', map {$_->name . ' (' . $_->records . ')'} $_->lists),
 			SCHEDULEON => UnixDate($_->scheduledfor, '%a, %d %b \'%y %H:%M'),
 			SCHEDULEDELIVERED => $dlvrd,
-			SCHEDULECOUNT => $schd,
+			SCHEDULECOUNT => $_->scheduled,
 			SCHEDULESTATUS => status2str($_->status),
 			SCHEDULEPAUSABLE => ($_->status == 1),
 			SCHEDULEPAUSED => ($_->status == 2),
@@ -418,41 +421,16 @@ sub save_schedule : Runmode {
 		compress   => 1,
 	);
 	
+	my $scheduledfor = $valids->{scheduledate} . ' ' . $valids->{schedulehour} . ':' . $valids->{schedulemin};
+
 	my $schedule = $valids->{scheduleid} ? 
 		EMGaugeDB::Schedule->retrieve(id => $valids->{scheduleid}) :
-		EMGaugeDB::Schedule->insert({});
-	my $scheduleid = $schedule->id;
-
-	my $jobh = {
-		type => 'Mail Delivery',
-		dbid => $scheduleid,
-		script => $app->config_param('Path.DeliverCommand') . " -s $scheduleid",
-		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
-	};
-
-	my $scheduledfor = $valids->{scheduledate} . ' ' . $valids->{schedulehour} . ':' . $valids->{schedulemin};
-	my $scheduletstmp = UnixDate("$scheduledfor", '%Y/%m/%d %H:%M:%S');
-
-	my $job = $clnt->put({
-		data => $srlzr->serialize($jobh),
-		ttr => 60,
-		delay => _getsecondsto($scheduletstmp),
-	});
-	die({type => 'error', msg => 'Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
-
-	my $sess_scheduled = EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id);
-	my $scheduled = $schedule->scheduled || 0;
-	$schedule->set(
-		name => $valids->{schedulename},
-		mailer => $valids->{mailerid},
-		jobid => $job->id,
-		scheduled => $scheduled + $sess_scheduled,
-		sess_scheduled => $sess_scheduled,
-		status => -1,
-		scheduledfor => UnixDate($scheduledfor, '%Y/%m/%d %H:%M'),
-		scheduledby => $app->authen->username,
-		repeated => $schedule->repeated + 1,
-	);
+		EMGaugeDB::Schedule->insert({
+			name => $valids->{schedulename},
+			mailer => $valids->{mailerid},
+			scheduledfor => UnixDate($scheduledfor, '%Y/%m/%d %H:%M'),
+			scheduledby => $app->authen->username,
+		});
 
 	$schedule->schedulelists->delete_all;
 	foreach (@validlistids) {
@@ -461,6 +439,32 @@ sub save_schedule : Runmode {
 			assignedby => $app->authen->username,
 		});
 	}
+	$schedule->update;
+	
+	my $scheduleid = $schedule->id;
+	my $jobh = {
+		type => 'Mail Delivery',
+		dbid => $scheduleid,
+		script => $app->config_param('Path.DeliverCommand') . " -s $scheduleid",
+		insertedon => strftime('%Y/%m/%d %H:%M:%S', localtime),
+	};
+
+	my $scheduletstmp = UnixDate("$scheduledfor", '%Y/%m/%d %H:%M:%S');
+	my $job = $clnt->put({
+		data => $srlzr->serialize($jobh),
+		ttr => 60,
+		delay => _getsecondsto($scheduletstmp),
+	});
+	die({type => 'error', msg => 'Insert on Beanstalk Server threw error: <strong>' . $clnt->error . '</strong> Please contact guru@dygnos.com with this error message'}) if $clnt->error;
+
+	my $sess_scheduled = EMGaugeDB::Schedule->sql_count_scheduled->select_val($schedule->id);
+	$schedule->set(
+		jobid => $job->id,
+		scheduled => $schedule->scheduled + $sess_scheduled,
+		sess_scheduled => $sess_scheduled,
+		repeated => $schedule->repeated + 1,
+		status => -1,
+	);
 	$schedule->update;
 	
 	$app->redirect('schedule.cgi');

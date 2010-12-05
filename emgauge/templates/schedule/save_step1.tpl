@@ -54,7 +54,7 @@
 								</tr>
 								<!-- /TMPL_LOOP -->
 								<!-- /TMPL_IF -->
-								<!-- TMPL_IF NAME=ASSIGNEDLISTS -->
+								<!-- TMPL_IF NAME=UNASSIGNEDLISTS -->
 								<tr><th>Unassigned Lists</th></tr>
 								<!-- TMPL_LOOP NAME=UNASSIGNEDLISTS -->
 								<tr<!-- TMPL_IF NAME=__odd__ --> class="odd"<!-- /TMPL_IF>>
