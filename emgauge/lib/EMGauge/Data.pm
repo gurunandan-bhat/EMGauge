@@ -17,6 +17,7 @@ use Date::Manip;
 use HTTP::BrowserDetect;
 use File::Basename qw(fileparse fileparse_set_fstype);
 use Spreadsheet::ParseExcel;
+use Spreadsheet::WriteExcel;
 use Text::CSV_XS;
 use Beanstalk::Client;
 
@@ -499,9 +500,6 @@ sub updatewatch : Runmode {
 }
 
 sub download_list : Runmode {
-
-	use Spreadsheet::WriteExcel;
-	use CGI::Application::Plugin::Stream (qw/stream_file/);
 
 	my $app = shift;
 

@@ -39,10 +39,10 @@ use Email::Valid;
 
 use HTML::Template;
 use Text::Template;
+use Text::CSV_XS;
 
 use Data::Dumper;
 
-# TODO Overall Critical: Use encoded URLs 
 our $CWD;
 
 sub setup {
@@ -1476,6 +1476,7 @@ sub performance : Runmode {
 		$totck += $logs->{$_}{'link'};
 
 		push @log, {
+			schid => $_,
 			schdt => $logs->{$_}{schdt},
 			schdd => $logs->{$_}{schdd} || 0,
 			schdv => $logs->{$_}{schdv} || 0,
@@ -1486,7 +1487,7 @@ sub performance : Runmode {
 		};
 	}
 	
-	my $tpl = $app->load_tmpl('mailer/perf.tpl', die_on_bad_params => 0);
+	my $tpl = $app->load_tmpl('mailer/perf.tpl', die_on_bad_params => 0, global_vars=> 1);
 	$tpl->param(
 		MAILERID => $mlrid,
 		MAILERNAME => $mailer->name,
@@ -1499,4 +1500,87 @@ sub performance : Runmode {
 
 	return $tpl->output;
 }
+
+sub getlist : Runmode {
+	
+	my $app = shift;
+	my $q = $app->query;
+
+	my $mlrid = $q->param('mid');
+	my $schid = $q->param('sid');
+	my $obj = $q->param('obj');
+	
+	my $qry;
+	my $opendh; 
+	if ($schid) {
+		$qry = "select
+					recipient.email,
+					list.name
+				from
+					recipient,
+					list,
+					listmembers
+				where 
+					listmembers.list = list.id and
+					listmembers.recipient = recipient.id and
+					recipient.id in 
+					(select 
+						distinct recipient
+					from
+						tracker
+					where
+						mailer = $mlrid and
+						schedule = $schid and
+						objtype = ?
+					)";
+
+		$opendh = $app->dbh->prepare($qry);
+		$opendh->execute($obj);
+	}
+	else {
+		$qry = "select
+					recipient.email,
+					list.name
+				from
+					recipient,
+					list,
+					listmembers
+				where 
+					listmembers.list = list.id and
+					listmembers.recipient = recipient.id and
+					recipient.id in 
+					(select 
+						distinct recipient
+					from
+						tracker
+					where
+						mailer = $mlrid and 
+						objtype = ?
+					)";
+
+		$opendh = $app->dbh->prepare($qry);
+		$opendh->execute($obj);
+	}
+
+	open(my $tmp, "+>", undef) or die({type => 'error', msg => "Cannot Open Temporary File: $!"});
+	my $csv = Text::CSV_XS->new () or
+		die({type => 'error', msg => "Cannot use CSV: " . Text::CSV->error_diag});
+	
+	$csv->print($tmp, [qw(Email List)]);
+	print $tmp "\n";
+	while (my $row = $opendh->fetchrow_arrayref) {
+		$csv->print($tmp, $row);
+		print $tmp "\n";
+	}
+	
+	$app->header_add(
+		-attachment => 'List_of_Recipients.csv',
+		-type => 'application/vnd.ms-excel',
+	);
+	
+	$app->stream_file($tmp);
+	
+	return;
+}
+
 1;

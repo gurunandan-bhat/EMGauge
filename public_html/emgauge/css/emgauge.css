@@ -196,6 +196,7 @@ tr.header {
 th {
 	background: #d7dbaf;
 	color: #2e5d60;
+	padding: 4px;
 }
 
 tr.odd {
@@ -220,4 +221,8 @@ input.button {
 	font-size: 1em;
 	font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, Verdana, sans-serif;
 	color: #404040;
-}	
+}
+
+td {
+	padding: 4px;
+}

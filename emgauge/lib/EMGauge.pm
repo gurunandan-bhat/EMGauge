@@ -11,6 +11,7 @@ use CGI::Application::Plugin::Session;
 use CGI::Application::Plugin::DBH qw{dbh_config dbh};
 use CGI::Application::Plugin::Redirect;
 use CGI::Application::Plugin::AutoRunmode;
+use CGI::Application::Plugin::Stream qw{stream_file};
 
 use POSIX qw{strftime};
 

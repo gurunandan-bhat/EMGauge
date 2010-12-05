@@ -73,7 +73,11 @@
 					<div class="prepend-8 span-10 last"><hr /></div>
 				</div>
 				<!-- /TMPL_LOOP -->
-				<!-- TMPL_VAR NAME=PAGENAV -->
+				<div class="span-18 last">
+					<div class="prepend-8 span-10 last">
+						<!-- TMPL_VAR NAME=PAGENAV -->
+					</div>
+				</div>
 			</div>
 			<div class="span-5 last">
 				<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
