@@ -375,6 +375,8 @@ sub parse_htmlfile {
 		elsif ($tag->[0] eq 'a') { # link!
 
 			my $href = $tag->[1]->{href};
+
+			next unless $href;
 			next if ($href eq '#');
 
 			my ($urischm, $uriauth, $uripath, $uriqry, $urifrgmnt) = URI::Split::uri_split($href);
@@ -1513,60 +1515,43 @@ sub getlist : Runmode {
 	my $qry;
 	my $opendh; 
 	if ($schid) {
-		$qry = "select
-					recipient.email,
-					list.name
+		$qry = "select distinct
+					recipient.email
 				from
 					recipient,
-					list,
-					listmembers
+					tracker
 				where 
-					listmembers.list = list.id and
-					listmembers.recipient = recipient.id and
-					recipient.id in 
-					(select 
-						distinct recipient
-					from
-						tracker
-					where
-						mailer = $mlrid and
-						schedule = $schid and
-						objtype = ?
-					)";
+					tracker.recipient = recipient.id and
+					tracker.mailer = ? and
+					tracker.schedule = ? and
+					tracker.objtype = ?";
 
 		$opendh = $app->dbh->prepare($qry);
-		$opendh->execute($obj);
+		$opendh->execute($mlrid, $schid, $obj);
 	}
 	else {
-		$qry = "select
-					recipient.email,
-					list.name
+		$qry = "select distinct
+					recipient.email
 				from
 					recipient,
-					list,
-					listmembers
+					tracker
 				where 
-					listmembers.list = list.id and
-					listmembers.recipient = recipient.id and
-					recipient.id in 
-					(select 
-						distinct recipient
-					from
-						tracker
-					where
-						mailer = $mlrid and 
-						objtype = ?
-					)";
+					tracker.recipient = recipient.id and
+					tracker.mailer = ? and
+					tracker.objtype = ?";
 
 		$opendh = $app->dbh->prepare($qry);
-		$opendh->execute($obj);
+		$opendh->execute($mlrid, $obj);
 	}
 
+	use IO::Handle;
 	open(my $tmp, "+>", undef) or die({type => 'error', msg => "Cannot Open Temporary File: $!"});
-	my $csv = Text::CSV_XS->new () or
+	$tmp->autoflush(1);
+	
+	my $csv = Text::CSV_XS->new ({binary => 1}) or
 		die({type => 'error', msg => "Cannot use CSV: " . Text::CSV->error_diag});
 	
-	$csv->print($tmp, [qw(Email List)]);
+	$csv->print($tmp, [qw(Email)]);
 	print $tmp "\n";
 	while (my $row = $opendh->fetchrow_arrayref) {
 		$csv->print($tmp, $row);
@@ -1578,7 +1563,7 @@ sub getlist : Runmode {
 		-type => 'application/vnd.ms-excel',
 	);
 	
-	$app->stream_file($tmp);
+	$app->stream_file($tmp, 256);
 	
 	return;
 }
