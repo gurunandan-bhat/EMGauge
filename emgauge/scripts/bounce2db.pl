@@ -42,8 +42,8 @@ my $dbh = DBI->connect($dsn, $user, $pwd, {
 	AutoCommit => 1,
 }) or die "Cannot connect to Database: $DBI::errstr";
 
-my $sth = $dbh->prepare("select username, password from mailbox");
-$sth->execute;
+my $sth = $dbh->prepare("select username, password from mailbox where domain = ?");
+$sth->execute($cfg->param('Mail.Domain'));
 
 while (my ($popusr, $poppwd) = $sth->fetchrow_array) {
 	
