@@ -16,6 +16,7 @@ __PACKAGE__->columns(Others => qw{
 	schedule
 	objtype
 	obj
+	uagent
 	reqtstamp
 });
 

@@ -16,40 +16,6 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `airtel_feedback`
---
-
-DROP TABLE IF EXISTS `airtel_feedback`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `airtel_feedback` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `sales` varchar(16) DEFAULT NULL,
-  `ccenter` varchar(16) DEFAULT NULL,
-  `frepair` varchar(16) DEFAULT NULL,
-  `network` varchar(16) DEFAULT NULL,
-  `browsing` varchar(16) DEFAULT NULL,
-  `billing` varchar(16) DEFAULT NULL,
-  `payment` varchar(16) DEFAULT NULL,
-  `resol` varchar(16) DEFAULT NULL,
-  `cntnu` varchar(16) DEFAULT NULL,
-  `recco` varchar(16) DEFAULT NULL,
-  `fname` varchar(48) DEFAULT NULL,
-  `lname` varchar(48) DEFAULT NULL,
-  `company` varchar(128) DEFAULT NULL,
-  `email` varchar(128) DEFAULT NULL,
-  `phone` varchar(48) DEFAULT NULL,
-  `altphone` varchar(48) DEFAULT NULL,
-  `callme` varchar(16) DEFAULT NULL,
-  `suggest` text,
-  `rcptid` int(11) DEFAULT NULL,
-  `rcpt` varchar(128) DEFAULT NULL,
-  `filedon` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `bounces`
 --
 
@@ -285,7 +251,7 @@ CREATE TABLE `mailerlists` (
   PRIMARY KEY (`id`),
   KEY `mailerlists_schedule_idx` (`schedule`),
   KEY `mailerlists_list_idx` (`list`)
-) ENGINE=MyISAM AUTO_INCREMENT=1447 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1456 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -307,7 +273,7 @@ CREATE TABLE `mailerlog` (
   `clicked` int(11) DEFAULT NULL,
   `updatedon` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=443 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=448 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -408,7 +374,7 @@ CREATE TABLE `schedule` (
   `repeated` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `schedule_mailer_idx` (`mailer`)
-) ENGINE=MyISAM AUTO_INCREMENT=474 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=480 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -421,22 +387,6 @@ DROP TABLE IF EXISTS `sessions`;
 CREATE TABLE `sessions` (
   `id` varchar(32) NOT NULL DEFAULT '',
   `data` text,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tempairtel`
---
-
-DROP TABLE IF EXISTS `tempairtel`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `tempairtel` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `email` varchar(128) DEFAULT NULL,
-  `valid` varchar(1) DEFAULT NULL,
-  `sent` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -473,7 +423,7 @@ CREATE TABLE `tracker` (
   `uagent` varchar(128) DEFAULT NULL,
   `reqtstamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=1470079 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=1470080 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -547,4 +497,4 @@ CREATE TABLE `xlparsequeue` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2010-12-03 12:45:34
+-- Dump completed on 2010-12-06 10:00:26
