@@ -169,15 +169,15 @@ sub lastlogin {
 	return;
 }
 
-#sub cgiapp_get_query {
-#
-#	use CGI::Simple;
-#
-#	$CGI::Simple::DISABLE_UPLOADS = 0;
-#	$CGI::Simple::POST_MAX = 12048000;
-#
-#	return CGI::Simple->new()
-#}
+sub cgiapp_get_query {
+
+	use CGI::Simple;
+
+	$CGI::Simple::DISABLE_UPLOADS = 0;
+	$CGI::Simple::POST_MAX = 12048000;
+
+	return CGI::Simple->new()
+}
    
 sub errhndlr : ErrorRunmode {
 	my $app = shift;
