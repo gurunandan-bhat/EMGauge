@@ -56,7 +56,7 @@ sub index : StartRunmode {
 
 	my $app = shift;	
 
-	my $page = $app->query->param('page') || 1;
+	my $page = $app->param('page') || 1;
 	my $pager = EMGaugeDB::Mailer->pager(
 		where => {createdby => $app->authen->username},
 		order_by => 'id desc',
@@ -98,7 +98,7 @@ sub index : StartRunmode {
 
 	$tpl->param(
 		MAILERS => \@mailers,
-		PAGENAV => $app->pager($page, $pager->last_page),
+		PAGENAV => $app->pager('mailers', $page, $pager->last_page),
 	);
 
 	return $tpl->output;

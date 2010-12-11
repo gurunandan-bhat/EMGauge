@@ -98,12 +98,12 @@ sub cgiapp_prerun {
 sub pager {
 	
 	my $app = shift;
+
+	my $class = shift;
 	my $page = shift;
 	my $maxpage = shift;
 	
 	return '' unless ($maxpage > 1);
-
-	my $url = $app->query->url(-relative => 1) || 'index.cgi';
 
 	my @pages = map {{
 		PAGE => $_, 
@@ -117,10 +117,10 @@ sub pager {
 	);
 
 	$pgtpl->param(
-		BASEURL => $url,
+		BASEURL => $class,
 		PAGER => \@pages,
-		PREVLINK => ($page > 1) ? $url . '?page=' . ($page - 1) : undef,
-		NEXTLINK => ($page < $maxpage) ? $url . '?page=' . ($page + 1) : undef, 
+		PREVLINK => ($page > 1) ? $class . '/' . ($page - 1) : undef,
+		NEXTLINK => ($page < $maxpage) ? $class . '/' . ($page + 1) : undef, 
 	);
 	
 	return $pgtpl->output;

@@ -5,7 +5,7 @@
 <p>
 <!-- TMPL_LOOP NAME=PAGER -->
 	<!-- TMPL_IF NAME=LINKED -->
-		<a href="<!-- TMPL_VAR NAME=BASEURL -->?page=<!-- TMPL_VAR NAME=PAGE -->"><!-- TMPL_VAR NAME=PAGE --></a>
+		<a href="<!-- TMPL_VAR NAME=BASEURL -->/<!-- TMPL_VAR NAME=PAGE -->"><!-- TMPL_VAR NAME=PAGE --></a>
 	<!-- TMPL_ELSE -->
 		<span class="thispage"><!-- TMPL_VAR NAME=PAGE --></span>
 	<!-- /TMPL_IF -->

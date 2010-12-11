@@ -1,0 +1,15 @@
+RewriteEngine On
+#
+# You may want to change the base if you are using the dispatcher within a
+# specific directory.
+#
+RewriteBase /emgauge
+#
+# If an actual file or directory is requested, serve directly
+#
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+#
+# Otherwise, pass everything through to the dispatcher
+#
+RewriteRule ^(.*)$ index.cgi/$1 [L,QSA]
