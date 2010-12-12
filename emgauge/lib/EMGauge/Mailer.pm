@@ -83,7 +83,7 @@ sub index : StartRunmode {
 			MAILERNAME => $mlr->name,
 			MAILERSUBJECT => $mlr->subject,
 			MAILERLANDINGPAGELINK => $mlr->landingpage || 'mailer.cgi?rm=create_landingpage&mailer=' . $id,
-			MAILERLINK => $mlr->onlineurl . "?tstmp=$nocache",
+			MAILERLINK => $app->config_param('URL.AppBase') . '/' . $mlr->onlineurl . "?tstmp=$nocache",
 			MAILERCAMPAIGN => EMGaugeDB::Campaign->retrieve(id => $mlr->campaign)->name,
 			MAILERCREATEDON => UnixDate($mlr->createdon, '%d %b \'%y'),
 			MAILERSCHEDULES => \@schedules,
@@ -98,7 +98,7 @@ sub index : StartRunmode {
 
 	$tpl->param(
 		MAILERS => \@mailers,
-		PAGENAV => $app->pager('mailers', $page, $pager->last_page),
+		PAGENAV => $app->pager('mailer/list', $page, $pager->last_page),
 	);
 
 	return $tpl->output;
@@ -269,7 +269,7 @@ sub save_step1 : Runmode {
 		TMPDATAFILE => $dfile,
 		CAMPAIGN => $campaign,
 		MAILER => $mailer,
-		MAILERLINK => $mdata->{htmlfile}->{relpath},
+		MAILERLINK => $app->config_param('URL.AppBase') . '/' . $mdata->{htmlfile}->{relpath},
 		DUMPER => undef,
 	);
 
@@ -465,7 +465,7 @@ sub make_thumbnail {
 
 	return {
 		path => $thmbpath,
-		url => File::Spec->abs2rel($thmbpath, $app->config_param('Path.AppBase')),
+		url => $app->config_param('Path.DocBase') . File::Spec->abs2rel($thmbpath, $app->config_param('Path.AppBase')),
 		w => $thmbw,
 		h => $thmbh,
 	};
@@ -530,7 +530,7 @@ sub save_step2 : Runmode {
 		TMPDATAFILE => $dfile,
 		CAMPAIGN => $mdata->{campaign},
 		MAILER => $mdata->{mailer},
-		MAILERLINK => $mdata->{htmlfile}->{relpath},
+		MAILERLINK => $app->config_param('URL.AppBase') . '/' . $mdata->{htmlfile}->{relpath},
 		imgs => $mdata->{htmlfile}->{imgs},
 		DUMPER => undef,
 	);
@@ -568,7 +568,7 @@ sub save_step3 : Runmode {
 		TMPDATAFILE => $dfile,
 		CAMPAIGN => $mdata->{campaign},
 		MAILER => $mdata->{mailer},
-		MAILERLINK => $mdata->{htmlfile}->{relpath},
+		MAILERLINK => $app->config_param('URL.AppBase') . '/' . $mdata->{htmlfile}->{relpath},
 		lnks => $mdata->{htmlfile}->{lnks},
 		DUMPER => undef,
 	);

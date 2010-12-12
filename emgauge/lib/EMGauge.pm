@@ -88,6 +88,7 @@ sub cgiapp_prerun {
 
 		$ht_params->{die_on_bad_params} = 0;
 		
+		$tmpl_params->{DOCBASE} = $app->config_param('Path.DocBase');
 		$tmpl_params->{USERNAME} = $app->authen->username;
 		$tmpl_params->{LASTLOGIN} = $app->lastlogin;
 	};

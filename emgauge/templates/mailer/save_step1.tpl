@@ -3,11 +3,11 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection" />  
-		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
-		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
-		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen" />
-		<title>Save Your Mailer - Step 1</title>
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/screen.css" type="text/css" media="screen, projection" />  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/print.css" type="text/css" media="print" />  
+		<!--[if lt IE 8]><link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/emgauge.css" type="text/css" media="screen" />
+		<title>Save Your Mailer - Step 2</title>
     </head>
 	<body>
 		<div class="container">
@@ -29,7 +29,7 @@
 			<div class="prepend-3 span-18 append-3 last formholder">
 				<div class="innerholder">
 					<div class="prepend-1 span-9 append-1">
-						<form  name="savestep1" method="post" action="mailer.cgi">
+						<form  name="savestep1" method="post" action="step3">
 							<!-- TMPL_IF NAME=some_errors --><p class="error">Some fields were either invalid or missing. We have indicated the error next to each field</p><!-- /TMPL_IF -->
 							<p>Fields marked with an asterisk (*) are required</p>
 							<p>
@@ -51,7 +51,6 @@
 							<p>
 								<input tabindex="5" type="submit" name="next" value="Next" />
 							</p>
-							<input type="hidden" name="rm" value="save_step2" />
 							<input type="hidden" name="dfile" value="<!-- TMPL_VAR NAME=TMPDATAFILE -->" />
 						</form>
 					</div>
@@ -59,7 +58,7 @@
 						<h1><!-- TMPL_VAR NAME=MAILER --> <a href="<!-- TMPL_VAR NAME=MAILERLINK -->" target="_blank">Preview</a></h1>
 						<h2>(For <!-- TMPL_VAR NAME=CAMPAIGN -->)</h2>
 						<pre><!-- TMPL_VAR NAME=DUMPER --></pre>
-						<p>Changed your mind? Want to Start Over from the beginning? <a href="mailer.cgi?rm=save_step0">Click here</a> </p>
+						<p>Changed your mind? Want to Start Over from the beginning? <a href="start">Click here</a> </p>
 						<!-- TMPL_INCLUDE NAME=default/task_list.tpl -->
 					</div>
 				</div>

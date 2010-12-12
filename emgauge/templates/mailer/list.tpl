@@ -3,13 +3,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection" />  
-		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
-		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
-		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/index_test_mail.js"></script>    
-		<script type="text/javascript" src="js/performance.js"></script>    
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/screen.css" type="text/css" media="screen, projection" />  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/print.css" type="text/css" media="print" />  
+		<!--[if lt IE 8]><link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/emgauge.css" type="text/css" media="screen, projection" />
+		<script type="text/javascript" src="<!-- TMPL_VAR NAME=DOCBASE -->js/jquery.min.js"></script>
+		<script type="text/javascript" src="<!-- TMPL_VAR NAME=DOCBASE -->js/index_test_mail.js"></script>    
+		<script type="text/javascript" src="<!-- TMPL_VAR NAME=DOCBASE -->js/performance.js"></script>    
 		<title>Create Mailer</title>
     </head>
 	<body>

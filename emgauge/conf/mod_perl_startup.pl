@@ -1,4 +1,4 @@
 
-use lib qw(/home/nandan/Devel/EMGauge/emgauge/lib);
+use lib qw(/home/nandan/workspace/EMGauge/emgauge/lib);
 
 1;

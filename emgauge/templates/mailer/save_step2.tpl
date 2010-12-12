@@ -3,13 +3,13 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
         <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen, projection" />  
-		<link rel="stylesheet" href="css/print.css" type="text/css" media="print" />  
-		<!--[if lt IE 8]><link rel="stylesheet" href="css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
-		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen" />
-		<script type="text/javascript" src="js/jquery.min.js"></script>
-		<script type="text/javascript" src="js/thumbnails.js"></script>
-		<title>Save Your Mailer - Step 2</title>
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/screen.css" type="text/css" media="screen, projection" />  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/print.css" type="text/css" media="print" />  
+		<!--[if lt IE 8]><link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/ie.css" type="text/css" media="screen, projection" /><![endif]-->  
+		<link rel="stylesheet" href="<!-- TMPL_VAR NAME=DOCBASE -->css/emgauge.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="<!-- TMPL_VAR NAME=DOCBASE -->js/jquery.min.js"></script>
+		<script type="text/javascript" src="<!-- TMPL_VAR NAME=DOCBASE -->js/thumbnails.js"></script>
+		<title>Save Your Mailer - Step 3</title>
     </head>
 	<body>
 		<div class="container">
@@ -31,7 +31,7 @@
 			<div class="prepend-3 span-18 append-3 last formholder">
 				<div class="innerholder">
 					<div class="prepend-1 span-9 append-1 last">
-						<form  name="savestep2" method="post" action="mailer.cgi">
+						<form  name="savestep2" method="post" action="step4">
 							<table width="100%" border="0" cellspacing="0" cellpadding="0" class="images">
 								<tr>
 									<td colspan="4">
@@ -69,7 +69,6 @@
 							</table>
 							<p><input type="submit" name="next" value="Next" />
 							</p>
-							<input type="hidden" name="rm" value="save_step3" />
 							<input id="dfile" type="hidden" name="dfile" value="<!-- TMPL_VAR NAME=TMPDATAFILE -->" />
 						</form>
 					</div>

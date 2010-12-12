@@ -19,7 +19,14 @@ sub dispatch_args {
 		},
 		table => [
 			'' => {app => 'Index', rm => 'home'},
-			'mailers/:page?' => {app => 'Mailer', rm => 'index'},
+			'mailer/list/:page?' => {app => 'Mailer', rm => 'index'},
+			'mailer/create/start' => {app => 'Mailer', rm => 'save_step0'},
+			'mailer/create/step2' => {app => 'Mailer', rm => 'save_step1'},
+			'mailer/create/step3' => {app => 'Mailer', rm => 'save_step2'},
+			'mailer/create/step4' => {app => 'Mailer', rm => 'save_step3'},
+			'mailer/create/step5' => {app => 'Mailer', rm => 'save_step4'},
+			'mailer/create/step6' => {app => 'Mailer', rm => 'save_step5'},
+			'mailer/create/finish' => {app => 'Mailer', rm => 'save_mailer'},
 		],
 		debug => 1,
 	}	

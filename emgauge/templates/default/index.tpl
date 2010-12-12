@@ -18,7 +18,7 @@
 				<h1>Mailers</h1>
 				<p>
 					<img class="left" src="images/mailer.png" width="110" height="110" />
-					<a href="mailers">View Mailers</a><br />
+					<a href="mailer/list/">View Mailers</a><br />
 					<a href="mailer.cgi?rm=save_step0">Create a Mailer</a><br />
 				</p>
 			</div>
