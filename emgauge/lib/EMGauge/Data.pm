@@ -533,7 +533,7 @@ sub download_list : Runmode {
 
 	#print the data	 - use set_sql
 	my $r=1;
-	DBI->trace(2);
+#	DBI->trace(2);
 
 
 	#return '<pre>' . Data::Dumper::Dumper(EDManageDB::Recipient->membersof(join(',',@selectedlists))) . '</pre>';
