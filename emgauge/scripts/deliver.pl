@@ -29,6 +29,7 @@ use Email::Sender::Transport::SMTP::Persistent;
 use Email::Sender::Transport::Test;
 
 use POSIX;
+use Time::HiRes qw{sleep};
 
 my $sid = 0;
 my $jobid = 0;
@@ -287,7 +288,7 @@ foreach(EMGaugeDB::Recipient->forschedule($sid, $offset)) {
 	);
 	$mailerlog->update;
 
-	sleep 30;
+	sleep 0.3;
 }
 
 $mailerlog->offset(0);
