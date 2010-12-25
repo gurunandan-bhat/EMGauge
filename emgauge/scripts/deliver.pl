@@ -211,6 +211,8 @@ $schedule->update;
 
 my $count = $mailerlog->delivered + 0;
 my $offset = $mailerlog->offset + 0;
+my $sleepfor = $cfg->param('Mail.SleepFor');
+
 foreach(EMGaugeDB::Recipient->forschedule($sid, $offset)) {
 	
 	++$offset;
@@ -288,7 +290,7 @@ foreach(EMGaugeDB::Recipient->forschedule($sid, $offset)) {
 	);
 	$mailerlog->update;
 
-	sleep 0.3;
+	sleep $sleepfor;
 }
 
 $mailerlog->offset(0);
