@@ -9,7 +9,7 @@
 		<link rel="stylesheet" href="css/emgauge.css" type="text/css" media="screen, projection" />
 		<script type="text/javascript" src="js/jquery.min.js"></script>
 		<script type="text/javascript" src="js/index_test_mail.js"></script>    
-		<script type="text/javascript" src="js/performance.js"></script>    
+		<script type="text/javascript" src="js/performance.js"></script>
 		<title>Create Mailer</title>
     </head>
 	<body>

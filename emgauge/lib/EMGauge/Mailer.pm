@@ -1568,4 +1568,37 @@ sub getlist : Runmode {
 	return;
 }
 
+sub getclicks : Runmode {
+
+	my $app = shift;
+	my $q = $app->query;
+
+	my $mlrid = $q->param('mlrid');
+	my $schid = $q->param('schid');
+	
+	my $qry = "select
+				links.href href,
+				count(distinct tracker.recipient) hits
+			from
+				tracker,
+				links
+			where
+				tracker.mailer = ? and
+				tracker.schedule = ? and
+				tracker.objtype = 'link' and
+				links.id = tracker.obj";
+	
+	my $opendh = $app->dbh->prepare($qry);
+	$opendh->execute($mlrid, $schid);
+	my $clicks = $opendh->fetchall_arrayref({});
+	
+	my $tpl = $app->load_tmpl('mailer/clicks.tpl', die_on_bad_params => 0, loop_context_vars => 1);
+	$tpl->param(
+		clicks => $clicks,
+		rows => scalar @{$clicks},
+	);
+		
+	return $tpl->output;	
+}
+
 1;

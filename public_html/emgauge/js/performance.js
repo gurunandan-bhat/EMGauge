@@ -13,4 +13,26 @@ $(document).ready(function() {
 		});
 		return false;
 	});
+	
+	$('a.clicks').live('click', function() {
+
+		var aelem = $(this);
+		var highrow = aelem.parent('td').parent('tr').next('tr.highlight');
+		
+		if (highrow.length) {
+			highrow.remove();
+			return false;
+		}
+		
+		var mlrid = aelem.attr('mlrid');
+		var schid = aelem.attr('schid');
+		var url = 'mailer.cgi?rm=getclicks&mlrid=' + mlrid + '&schid=' + schid;
+
+		$.get(url, function(data) {
+			
+			aelem.parent('td').parent('tr').after(data);
+		});
+
+		return false;
+	})
 })
