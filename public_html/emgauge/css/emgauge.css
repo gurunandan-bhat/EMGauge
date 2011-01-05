@@ -226,3 +226,7 @@ input.button {
 td {
 	padding: 4px;
 }
+
+.highlight {
+	background: #fbffcf;
+}

@@ -10,19 +10,19 @@
     </head>
 	<body>
 		<div class="container">
-			<div class="span-24 banner last">
+			<div class="span-24 last">
 				<img src="images/airtel-logo.jpg" width="240" height="150" />
+				<hr />
 			</div>
 			<div class="span-12">
 				<h1>Unsubscribe me from Future Offers</h1>
 				<div class="box">
 					<p>
-						Following your subscription to our email service offering exciting travel deals, SOTC has been sending you these offers
+						Following your subscription to our email service offering exciting deals and offer, Airtel has been sending you these offers
 						to your address <!-- TMPL_VAR NAME=EMAIL -->.
 					</p>
 					<p>
-						To stop further emails notifying you about these offers, from being sent to you, please click the button below. 
-						You can always re-subscribe later by sending an email to <a href="mailto:subscribe@sotcoffers.com">subscribe@sotcoffers.com</a>
+						To stop further emails notifying you about these offers, from being sent to you, please click the button below.
 					</p>
 					<form method="post" action="user.cgi">
 						<input type="submit" name="unsubscribe" value="Unsubscribe Me" />

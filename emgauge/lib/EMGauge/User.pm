@@ -443,19 +443,19 @@ sub unsubscribe : Runmode {
 	
 	my $app = shift;
 	
-	my $rcpt = $app->query->param('rcpt');
+	my $rcpt = $app->query->param('id');
 	my $digest = $app->query->param('digest');
 
 	die({type => 'error', msg => 'Sorry, We cannot unsubscribe you with incomplete information. Please click on a link sent to you in our communication' . "$rcpt $digest"})
 		unless $rcpt && $digest;
 
-	die ({type => 'error', msg => 'Sorry, we do not have your email in our Database. Please click on a link sent to in our communication  . "$rcpt $digest"'}) 
+	die ({type => 'error', msg => 'Sorry, we do not have your email in our Database. Please click on a link sent to in our communication: '  . "$rcpt $digest"}) 
 		unless (my $user = EMGaugeDB::Recipient->retrieve(id => $rcpt));
 		
 	die ({type => 'error', msg => 'Sorry, We cannot unsubscribe you with incomplete information. Please click on a link sent to you in our communication' . "$rcpt $digest"}) 
 		unless ($digest eq sha1_hex($app->config_param('Mail.DigestSekrit') . $user->email));
 	
-	my $tpl = $app->load_tmpl('unsubscribe/ipf_unsubscribe.tpl', die_on_bad_params => 0);
+	my $tpl = $app->load_tmpl('unsubscribe/unsubscribe.tpl', die_on_bad_params => 0);
 
 	$tpl->param(
 		EMAIL => $user->email,
@@ -486,7 +486,7 @@ sub trulyunsubscribe : Runmode {
 	$user->set(unsubscribed => 1);
 	$user->update;
 		
-	return $app->redirect('http://ipfonline.com/');
+	return $app->redirect('http://airtel.in/');
 }
 
 sub addcomment : Runmode {

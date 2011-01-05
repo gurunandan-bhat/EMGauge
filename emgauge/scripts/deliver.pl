@@ -70,6 +70,7 @@ my $mlrsender = $mailer->sendername;
 my $mlrsenderemail = $mailer->senderemail;
 my $mlrsubject = $mailer->subject;
 my $mlrreplyto = $mailer->replytoemail;
+my $mlrlandingpage = $mailer->landingpage;
 
 my $mlrfile = $mailer->htmlfilepath;
 die "Cannot Read HTML File: $mlrfile for Mailer ID $mlrid, Name: $mlrname" unless (-f $mlrfile and -r _);
@@ -247,6 +248,7 @@ foreach(EMGaugeDB::Recipient->forschedule($sid, $offset)) {
 			unsubscribelink => $baseurl . '/user.cgi?rm=unsubscribe&id=' . $_->id . '&digest=' . $digest,
 			viewonlinelink => $mlrurl,
 			commentlink => $baseurl . '/user.cgi?rm=comment&id=' . $_->id . '&mlr=' . $mlrid . '&digest=' . $digest,
+			landingpageurl => $mlrlandingpage,
 			firstname => $_->firstname,
 			lastname => $_->lastname,
 			fullname => $_->fullname,

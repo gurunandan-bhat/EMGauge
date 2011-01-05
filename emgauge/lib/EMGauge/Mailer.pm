@@ -1578,6 +1578,7 @@ sub getclicks : Runmode {
 	
 	my $qry = "select
 				links.href href,
+				links.title title,
 				count(distinct tracker.recipient) hits
 			from
 				tracker,
@@ -1586,7 +1587,10 @@ sub getclicks : Runmode {
 				tracker.mailer = ? and
 				tracker.schedule = ? and
 				tracker.objtype = 'link' and
-				links.id = tracker.obj";
+				links.id = tracker.obj
+			group by
+				links.href,
+				links.title";
 	
 	my $opendh = $app->dbh->prepare($qry);
 	$opendh->execute($mlrid, $schid);
