@@ -378,6 +378,7 @@ sub parse_htmlfile {
 
 			next unless $href;
 			next if ($href eq '#');
+			next if ($href =~ /\{\$unsubscribelink}/);
 
 			my ($urischm, $uriauth, $uripath, $uriqry, $urifrgmnt) = URI::Split::uri_split($href);
 
