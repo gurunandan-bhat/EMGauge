@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use ex::lib qw(../);
-use base qw(EMGauge);
+use base qw{EMGauge};
 
 use POSIX qw{strftime};
 
