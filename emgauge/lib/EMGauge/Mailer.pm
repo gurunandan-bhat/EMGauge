@@ -41,6 +41,10 @@ use HTML::Template;
 use Text::Template;
 use Text::CSV_XS;
 
+use Archive::Extract;
+use File::chdir;
+use Archive::Rar;
+
 use Data::Dumper;
 
 our $CWD;
@@ -203,7 +207,6 @@ sub save_step1 : Runmode {
 	# Step 3 - Show a List of Images and their relative paths and the set of links to track
 
 	if ($osufx =~ /^\.zip/i) {
-		use Archive::Extract;
 		my $arc;
 		$arc = Archive::Extract->new(archive => $zipcpyname) or
 			die({type => 'error', msg => "Eror Linking to $zipcpyname" . $arc->error});
@@ -212,8 +215,6 @@ sub save_step1 : Runmode {
 			die({type => 'error', msg => "Eror Extracting $zipcpyname" . $arc->error});
 	}
 	elsif ($osufx =~ /^\.rar/i) {
-		use File::chdir;
-		use Archive::Rar;
 		{
 			local $CWD = $mlrfldr;
 			my $rarc = Archive::Rar->new(
